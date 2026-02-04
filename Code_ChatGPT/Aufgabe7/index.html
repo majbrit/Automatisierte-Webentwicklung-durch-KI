@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lautstärkeregler (0–100)</title>
+  <style>
+    :root{
+      --track-height:12px;
+      --thumb-size:22px;
+      --accent:#4f46e5; /* indigo */
+      --bg:#f3f4f6; /* gray-100 */
+      --muted:#9ca3af; /* gray-400 */
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      color-scheme:light;
+    }
+
+    body{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:linear-gradient(180deg,#ffffff 0%, #f8fafc 100%);
+      margin:0;
+      padding:24px;
+    }
+
+    .card{
+      width:100%;
+      max-width:520px;
+      background:white;
+      border-radius:12px;
+      box-shadow:0 6px 18px rgba(15,23,42,0.08);
+      padding:20px 22px;
+    }
+
+    h1{font-size:18px;margin:0 0 10px}
+    p{margin:0 0 18px;color:var(--muted);font-size:13px}
+
+    .control-row{
+      display:flex;align-items:center;gap:14px;
+    }
+
+    /* Custom range styling */
+    .slider-wrap{flex:1;display:flex;align-items:center;gap:12px}
+    input[type="range"]{
+      -webkit-appearance:none;
+      appearance:none;
+      width:100%;
+      height:var(--track-height);
+      background:transparent;
+      cursor:pointer;
+      margin:0;
+    }
+
+    /* track (background) */
+    input[type="range"]::-webkit-slider-runnable-track{
+      height:var(--track-height);
+      border-radius:999px;
+      background:linear-gradient(90deg,var(--accent) 0%, var(--accent) var(--fill-percent), #e6e9ef var(--fill-percent));
+    }
+    input[type="range"]::-moz-range-track{
+      height:var(--track-height);
+      border-radius:999px;
+      background:linear-gradient(90deg,var(--accent) 0%, var(--accent) var(--fill-percent), #e6e9ef var(--fill-percent));
+    }
+
+    /* thumb */
+    input[type="range"]::-webkit-slider-thumb{
+      -webkit-appearance:none;
+      width:var(--thumb-size);
+      height:var(--thumb-size);
+      border-radius:50%;
+      margin-top: calc((var(--track-height) - var(--thumb-size)) / 2);
+      background:white;
+      border:3px solid var(--accent);
+      box-shadow:0 2px 6px rgba(79,70,229,0.18);
+    }
+    input[type="range"]::-moz-range-thumb{
+      width:var(--thumb-size);
+      height:var(--thumb-size);
+      border-radius:50%;
+      background:white;
+      border:3px solid var(--accent);
+      box-shadow:0 2px 6px rgba(79,70,229,0.18);
+    }
+
+    /* focus */
+    input[type="range"]:focus{outline:none}
+    input[type="range"]:focus::-webkit-slider-thumb{box-shadow:0 4px 12px rgba(79,70,229,0.28)}
+
+    /* numeric display */
+    .value-box{
+      min-width:78px;
+      text-align:center;
+      font-weight:600;
+      font-size:14px;
+      color:#0f172a;
+    }
+
+    .small{
+      font-size:12px;color:var(--muted);font-weight:500
+    }
+
+    /* mute button */
+    .mute-btn{
+      border:1px solid #e6e9ef;
+      background:#fff;
+      padding:8px 12px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:8px
+    }
+    .mute-btn .dot{width:10px;height:10px;border-radius:50%;background:var(--muted)}
+    .mute-btn.active .dot{background:#ef4444}
+
+    /* responsive */
+    @media (max-width:420px){
+      .value-box{min-width:58px;font-size:13px}
+      .card{padding:16px}
+    }
+  </style>
+</head>
+<body>
+  <div class="card" role="region" aria-label="Lautstärkeregler">
+    <h1>Lautstärke</h1>
+    <p>Regle die Lautstärke mit dem Slider (0 = stumm, 100 = maximal). Der Wert wird live angezeigt.</p>
+
+    <div class="control-row">
+      <div class="slider-wrap">
+        <label for="volumeRange" class="small" style="display:none">Lautstärke</label>
+        <input id="volumeRange" type="range" min="0" max="100" step="1" value="50" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-label="Lautstärke" />
+      </div>
+
+      <div class="value-box" id="valueBox" aria-live="polite">50%</div>
+
+      <button id="muteBtn" class="mute-btn" aria-pressed="false" title="Stummschalten">
+        <span class="dot" aria-hidden="true"></span>
+        <span class="small">Stumm</span>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Zugriff auf Elemente
+    const range = document.getElementById('volumeRange');
+    const valueBox = document.getElementById('valueBox');
+    const muteBtn = document.getElementById('muteBtn');
+
+    // Hilfsfunktion: setze CSS-Variable --fill-percent so dass Track-Farbverlauf korrekt ist
+    function updateFillPercent(value){
+      const percent = (Number(value) / 100) * 100;
+      // setze als Prozentwert string (z.B. '37%')
+      document.documentElement.style.setProperty('--fill-percent', percent + '%');
+    }
+
+    // Initial
+    updateFillPercent(range.value);
+    valueBox.textContent = range.value + '%';
+
+    // Event: Slider ändert sich
+    range.addEventListener('input', (e) => {
+      const v = e.target.value;
+      valueBox.textContent = v + '%';
+      range.setAttribute('aria-valuenow', v);
+      updateFillPercent(v);
+
+      // wenn Wert > 0 und mute aktiv war, deaktiviere mute
+      if(v > 0 && muteBtn.classList.contains('active')){
+        muteBtn.classList.remove('active');
+        muteBtn.setAttribute('aria-pressed','false');
+      }
+    });
+
+    // Mute-Toggle: merkt sich vorherigen Wert
+    let prevVolume = Number(range.value);
+    muteBtn.addEventListener('click', () => {
+      const isMuted = muteBtn.classList.toggle('active');
+      muteBtn.setAttribute('aria-pressed', String(isMuted));
+
+      if(isMuted){
+        // stummschalten: speichere aktuellen Wert und setze auf 0
+        prevVolume = Number(range.value);
+        range.value = 0;
+        range.dispatchEvent(new Event('input'));
+      } else {
+        // wiederherstellen
+        range.value = prevVolume || 50;
+        range.dispatchEvent(new Event('input'));
+      }
+    });
+
+    // Tastaturunterstützung: Pfeiltasten + PageUp/PageDown/Home/End
+    range.addEventListener('keydown', (e) => {
+      const step = Number(range.step) || 1;
+      let v = Number(range.value);
+      if(e.key === 'ArrowLeft' || e.key === 'ArrowDown') { v = Math.max(0, v - step); }
+      else if(e.key === 'ArrowRight' || e.key === 'ArrowUp') { v = Math.min(100, v + step); }
+      else if(e.key === 'PageDown') { v = Math.max(0, v - 10); }
+      else if(e.key === 'PageUp') { v = Math.min(100, v + 10); }
+      else if(e.key === 'Home') { v = 0; }
+      else if(e.key === 'End') { v = 100; }
+      else return; // uninteressante Taste
+
+      e.preventDefault();
+      range.value = v;
+      range.dispatchEvent(new Event('input'));
+    });
+
+    // Für Demo-Zwecke: einfache WebAudio-Anbindung (optional) - erzeugt ein leises Signal, um die Änderung hörbar zu machen
+    // Hinweis: Diese Sektion ist optional und kommentiert. Entfernen Sie die Kommentare, wenn Sie einen Testton möchten.
+    /*
+    let ctx, osc, gainNode;
+    function setupAudio(){
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      osc = ctx.createOscillator();
+      gainNode = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = 440;
+      osc.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      osc.start();
+      setAudioVolume(Number(range.value));
+    }
+
+    function setAudioVolume(value){
+      if(!gainNode) return;
+      // einfache dB-ähnliche Skalierung: 0 -> -Infinity (mute), 100 -> 1.0
+      const gain = value === 0 ? 0 : Math.pow(value / 100, 1.6);
+      gainNode.gain.setTargetAtTime(gain, ctx.currentTime, 0.01);
+    }
+
+    // Entkommentiere Folgendes, um Autoplay-Einschränkungen zu umgehen: erst nach einem Benutzer-Event initialisieren
+    document.addEventListener('click', function once(){
+      document.removeEventListener('click', once);
+      setupAudio();
+    });
+
+    range.addEventListener('input', () => setAudioVolume(Number(range.value)));
+    */
+
+    // kleine Verbesserung: beim Laden prüfe, ob Startwert 0 ist -> mute-style
+    if(Number(range.value) === 0){
+      muteBtn.classList.add('active');
+      muteBtn.setAttribute('aria-pressed','true');
+    }
+
+  </script>
+</body>
+</html>

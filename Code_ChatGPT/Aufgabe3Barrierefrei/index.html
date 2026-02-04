@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Barrierefreies Anmeldeformular</title>
+  <style>
+    :root{
+      --bg:#f7f9fb; --card:#ffffff; --accent:#0b67d0; --error:#c62828; --text:#0b1720;
+      --radius:12px; --gap:14px; --max-width:720px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; background:linear-gradient(180deg,var(--bg),#eef3f8); color:var(--text); line-height:1.4;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    }
+
+    /* Skip link for keyboard users */
+    .skip-link{position:absolute;left:-999px;top:auto;width:1px;height:1px;overflow:hidden}
+    .skip-link:focus{left:1rem;top:1rem;width:auto;height:auto;padding:.5rem .75rem;background:#000;color:#fff;border-radius:6px;z-index:999}
+
+    .container{max-width:var(--max-width);margin:48px auto;padding:24px}
+    header{margin-bottom:18px}
+    h1{font-size:1.5rem;margin:.25rem 0}
+    p.lead{margin:0;color:#334155}
+
+    .card{background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:0 6px 18px rgba(11,23,32,0.06)}
+
+    form{display:grid;grid-template-columns:1fr;gap:var(--gap)}
+    .field{display:flex;flex-direction:column;gap:6px}
+    label{font-weight:600}
+    input[type="text"],input[type="email"],input[type="number"]{
+      padding:.75rem .85rem;border:1px solid #cbd5e1;border-radius:10px;font-size:1rem;background:transparent;outline:none;
+    }
+    input:focus{box-shadow:0 0 0 4px rgba(11,103,208,0.12);border-color:var(--accent)}
+    .hint{font-size:.875rem;color:#475569}
+
+    .error{color:var(--error);font-size:.9rem}
+    .input-error{border-color:var(--error);box-shadow:0 0 0 4px rgba(198,40,40,0.08)}
+
+    .actions{display:flex;gap:12px;align-items:center}
+    button[type="submit"]{background:var(--accent);color:#fff;padding:.8rem 1rem;border-radius:10px;border:none;font-weight:600;cursor:pointer}
+    button[type="submit"]:focus{outline:3px solid rgba(11,103,208,0.14)}
+
+    /* Accessible focus indicators for all interactive elements */
+    a:focus,button:focus,input:focus{outline-offset:3px}
+
+    /* Error summary */
+    #error-summary{border-left:4px solid var(--error);background:#fff5f5;padding:12px;border-radius:8px}
+    #error-summary h2{margin:.25rem 0;font-size:1rem}
+
+    /* Responsive */
+    @media (min-width:720px){ form{grid-template-columns:1fr 1fr} .full{grid-column:1/-1} }
+
+    /* Respect user's reduced motion preference */
+    @media (prefers-reduced-motion:reduce){ *{transition:none!important} }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-form">Zum Formular springen</a>
+  <div class="container">
+    <header>
+      <h1>Barrierefreies Anmeldeformular</h1>
+      <p class="lead">Fülle bitte Name, E‑Mail und Alter aus. Pflichtfelder sind mit * markiert.</p>
+    </header>
+
+    <main id="main" role="main">
+      <section class="card" aria-labelledby="form-title">
+        <h2 id="form-title" class="visually-hidden">Anmeldeformular</h2>
+
+        <!-- Error summary: will be filled by JS when submit fails -->
+        <div id="error-summary" tabindex="-1" aria-live="assertive" hidden></div>
+
+        <form id="signup-form" novalidate aria-describedby="form-desc">
+          <p id="form-desc" class="hint">Die Daten werden nur zur Demonstration verwendet.</p>
+
+          <div class="field full">
+            <label for="name">Name <span aria-hidden="true">*</span></label>
+            <input id="name" name="name" type="text" autocomplete="name" required aria-required="true" aria-describedby="name-hint name-error">
+            <div id="name-hint" class="hint">Vor- und Nachname.</div>
+            <div id="name-error" class="error" aria-live="polite"></div>
+          </div>
+
+          <div class="field">
+            <label for="email">E‑Mail <span aria-hidden="true">*</span></label>
+            <input id="email" name="email" type="email" autocomplete="email" required aria-required="true" aria-describedby="email-hint email-error">
+            <div id="email-hint" class="hint">Wir benötigen eine gültige E‑Mail-Adresse.</div>
+            <div id="email-error" class="error" aria-live="polite"></div>
+          </div>
+
+          <div class="field">
+            <label for="age">Alter <span aria-hidden="true">*</span></label>
+            <input id="age" name="age" type="number" inputmode="numeric" min="1" max="120" required aria-required="true" aria-describedby="age-hint age-error">
+            <div id="age-hint" class="hint">Gib eine Zahl zwischen 1 und 120 ein.</div>
+            <div id="age-error" class="error" aria-live="polite"></div>
+          </div>
+
+          <div class="field full actions">
+            <button type="submit">Anmelden</button>
+            <p class="hint" style="margin:0">Tastatur: Tab zum Navigieren, Enter zum Absenden.</p>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <footer style="margin-top:12px;color:#64748b;font-size:.9rem">Hinweis: Dieses Formular ist eine barrierefreie Vorlage - passt es bei Bedarf an.</footer>
+  </div>
+
+  <script>
+    (function(){
+      // Utility helpers
+      function qs(id){return document.getElementById(id)}
+      function showError(input, message){
+        const errorId = input.id + '-error';
+        const errorEl = qs(errorId);
+        if(message){
+          input.classList.add('input-error');
+          input.setAttribute('aria-invalid','true');
+          errorEl.textContent = message;
+          input.setAttribute('aria-describedby', (input.getAttribute('aria-describedby')||'') + ' ' + errorId);
+        } else {
+          input.classList.remove('input-error');
+          input.removeAttribute('aria-invalid');
+          errorEl.textContent = '';
+        }
+      }
+
+      function validateName(){
+        const input = qs('name');
+        const val = input.value.trim();
+        if(!val) return 'Name ist erforderlich.';
+        if(val.length < 2) return 'Bitte mindestens 2 Zeichen eingeben.';
+        return '';
+      }
+      function validateEmail(){
+        const input = qs('email');
+        const val = input.value.trim();
+        if(!val) return 'E‑Mail ist erforderlich.';
+        // rely on browser basic email validity, but add a simple regex check
+        const re = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+        if(!re.test(val)) return 'Bitte eine gültige E‑Mail-Adresse eingeben.';
+        return '';
+      }
+      function validateAge(){
+        const input = qs('age');
+        const val = input.value.trim();
+        if(!val) return 'Alter ist erforderlich.';
+        const num = Number(val);
+        if(Number.isNaN(num)) return 'Bitte eine Zahl eingeben.';
+        if(num < 1 || num > 120) return 'Alter muss zwischen 1 und 120 liegen.';
+        return '';
+      }
+
+      // wire up real-time validation
+      ['name','email','age'].forEach(function(id){
+        const inp = qs(id);
+        inp.addEventListener('input', function(){
+          let msg = '';
+          if(id==='name') msg = validateName();
+          if(id==='email') msg = validateEmail();
+          if(id==='age') msg = validateAge();
+          showError(inp, msg);
+        });
+      });
+
+      const form = qs('signup-form');
+      const errorSummary = qs('error-summary');
+
+      form.addEventListener('submit', function(ev){
+        ev.preventDefault();
+        // validate all
+        const validators = [
+          {id:'name', fn:validateName},
+          {id:'email', fn:validateEmail},
+          {id:'age', fn:validateAge}
+        ];
+        const errors = [];
+        validators.forEach(function(v){
+          const msg = v.fn();
+          const input = qs(v.id);
+          showError(input, msg);
+          if(msg) errors.push({id:v.id, message:msg, element:input});
+        });
+
+        if(errors.length){
+          // Fill error summary with links to fields
+          errorSummary.hidden = false;
+          let html = '<h2>Fehler beim Absenden</h2><p>Bitte korrigiere die folgenden Felder:</p><ul>';
+          errors.forEach(function(e){
+            html += '<li><a href="#'+e.id+'">' + document.querySelector('label[for="'+e.id+'"]').textContent.trim() + ': ' + e.message + '</a></li>';
+          });
+          html += '</ul>';
+          errorSummary.innerHTML = html;
+          // focus the summary so screen reader users are notified
+          errorSummary.focus();
+          // focus the first invalid field
+          errors[0].element.focus();
+          return;
+        }
+
+        // If valid: simulate success (in real use, post to server)
+        errorSummary.hidden = true;
+        alert('Danke — das Formular wurde erfolgreich übermittelt!');
+        form.reset();
+        // clear visual error states
+        ['name','email','age'].forEach(function(id){showError(qs(id), '');});
+      });
+
+      // small enhancement: if user clicks an error link, focus proper field
+      errorSummary.addEventListener('click', function(e){
+        if(e.target.tagName === 'A' && e.target.getAttribute('href')){
+          const id = e.target.getAttribute('href').slice(1);
+          const field = qs(id);
+          if(field){ field.focus(); e.preventDefault(); }
+        }
+      });
+
+    })();
+  </script>
+</body>
+</html>

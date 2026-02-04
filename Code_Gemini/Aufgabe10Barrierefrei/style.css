@@ -1,0 +1,160 @@
+/* --- 1. Grundsetup & Farbpalette --- */
+
+:root {
+    /* Ungewöhnliche, aber kontrastreiche Farbpalette */
+    --bg-dark-indigo: #1A1A2E; /* Tiefer, dunkler Hintergrund */
+    --text-light-mint: #E0FBFC; /* Heller, fast weißer Text */
+    --accent-bright-coral: #FF5757; /* Kräftiger Akzent 1 */
+    --accent-warm-gold: #F3A712;   /* Kräftiger Akzent 2 */
+
+    /* Hochwertige Schriftarten */
+    --font-heading: 'Playfair Display', serif;
+    --font-body: 'Roboto Mono', monospace;
+}
+
+/* Globaler Reset und Basiseinstellungen */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    /* Sanftes Scrollen für Anker-Links (falls vorhanden) und JS-Scrolls */
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-dark-indigo);
+    color: var(--text-light-mint);
+    font-family: var(--font-body);
+    font-size: 1.1rem;
+    line-height: 1.7;
+    overflow-x: hidden; /* Verhindert horizontales Scrollen */
+}
+
+/* --- 2. Typografie & Links --- */
+
+h1, h2 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    color: var(--accent-warm-gold); /* Gold für Überschriften */
+}
+
+h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem); /* Responsive Schriftgröße */
+}
+
+h2 {
+    font-size: clamp(2rem, 5vw, 3rem);
+}
+
+p {
+    max-width: 60ch; /* Begrenzt die Zeilenlänge für bessere Lesbarkeit */
+    margin-bottom: 1rem;
+}
+
+a {
+    color: var(--accent-bright-coral);
+    text-decoration: none;
+    font-weight: bold;
+    transition: opacity 0.3s ease;
+}
+
+/* Barrierefreiheit: Fokus-Status */
+a:focus,
+section[tabindex="0"]:focus {
+    outline: 3px dashed var(--accent-bright-coral);
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+/* --- 3. Layout & Sektionen --- */
+
+.hero-section {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+.scroll-section {
+    min-height: 100vh; /* Füllt den gesamten Viewport */
+    display: grid;
+    place-items: center; /* Zentriert den Inhalt perfekt */
+    padding: 4rem 2rem;
+}
+
+/* Abwechselnde Akzentfarben für Überschriften */
+#kapitel1 h2, #kapitel3 h2 {
+    color: var(--accent-bright-coral);
+}
+
+#kapitel2 h2, #kapitel4 h2 {
+    color: var(--accent-warm-gold);
+}
+
+footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: 0.9rem;
+    opacity: 0.7;
+}
+
+/* --- 4. Scroll-Animation --- */
+
+.content-wrapper {
+    /* Standard-Zustand: Unsichtbar und nach unten verschoben */
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+/* Sichtbarer Zustand: Wird per JS hinzugefügt */
+.scroll-section.is-visible .content-wrapper {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Barrierefreiheit: Animationen reduzieren */
+@media (prefers-reduced-motion: reduce) {
+    .content-wrapper {
+        /* Deaktiviert die Bewegung, behält aber das Einblenden bei */
+        transform: translateY(0);
+        transition: opacity 0.8s ease-out;
+    }
+}
+
+/* Kleiner animierter Scroll-Indikator */
+.scroll-indicator {
+    margin-top: 2rem;
+    width: 2px;
+    height: 40px;
+    background-color: var(--text-light-mint);
+    position: relative;
+    overflow: hidden;
+}
+
+.scroll-indicator::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 10px;
+    background-color: var(--accent-bright-coral);
+    animation: scroll-down 2s ease-in-out infinite;
+}
+
+@keyframes scroll-down {
+    0% { transform: translateY(-10px); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translateY(40px); opacity: 0; }
+}

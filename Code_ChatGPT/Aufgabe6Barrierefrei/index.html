@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Barrierefreier Darkmode – Beispielseite</title>
+  <style>
+    /* Root variables for both themes */
+    :root{
+      --bg: #ffffff;
+      --surface: #f6f6f6;
+      --text: #111111;
+      --muted: #444444;
+      --accent: #0066cc;
+      --focus: 3px solid Highlight;
+      --transition-duration: 220ms;
+    }
+
+    /* Dark theme variables */
+    :root[data-theme='dark']{
+      --bg: #0f1113;        /* dark page background */
+      --surface: #121214;   /* card / surface */
+      --text: #e6eef8;      /* main text */
+      --muted: #b8c2d0;     /* secondary text */
+      --accent: #3399ff;    /* accent color */
+    }
+
+    /* Honor user's reduced motion preference */
+    @media (prefers-reduced-motion: reduce){
+      :root{ --transition-duration: 0ms; }
+    }
+
+    /* Base layout */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.45;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      transition: background var(--transition-duration) ease, color var(--transition-duration) ease;
+    }
+
+    .container{
+      max-width:900px;
+      margin:48px auto;
+      padding:24px;
+    }
+
+    header{
+      display:flex;
+      gap:16px;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:28px;
+    }
+
+    h1{font-size:1.6rem;margin:0}
+    p{color:var(--muted);margin-top:12px}
+
+    /* Accessible toggle (switch) */
+    .switch{
+      display:inline-flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .switch-label{
+      font-size:0.95rem;
+    }
+
+    /* Visually styled switch that wraps a hidden checkbox */
+    .switch-control{
+      position:relative;
+      width:56px;
+      height:32px;
+      background:linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.02));
+      border-radius:999px;
+      padding:4px;
+      display:inline-block;
+      transition: background var(--transition-duration) ease, box-shadow var(--transition-duration) ease;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.08) inset;
+    }
+
+    .switch-handle{
+      width:24px;height:24px;border-radius:50%;background:var(--surface);
+      transform:translateX(0);
+      transition: transform var(--transition-duration) ease, background var(--transition-duration) ease;
+      box-shadow:0 2px 4px rgba(0,0,0,0.12);
+    }
+
+    input[type="checkbox"].visually-hidden{
+      position:absolute !important;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;
+    }
+
+    /* When checked, move the handle and adjust background */
+    input[type="checkbox"]:checked + .switch-control{
+      background:linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.04));
+    }
+    input[type="checkbox"]:checked + .switch-control .switch-handle{
+      transform:translateX(24px);
+      background:var(--accent);
+    }
+
+    /* Focus styles (high-contrast friendly) */
+    input[type="checkbox"]:focus + .switch-control{outline:none; box-shadow: var(--focus);}
+    button:focus{outline:none; box-shadow: var(--focus)}
+
+    /* Card for content */
+    main{background:var(--surface); padding:28px; border-radius:12px; box-shadow: 0 6px 18px rgba(0,0,0,0.06)}
+
+    .hero-actions{margin-top:18px;display:flex;gap:12px;align-items:center}
+
+    /* Primary button */
+    .btn{
+      background:var(--accent);
+      color:var(--bg);
+      border:0;padding:10px 16px;border-radius:8px;font-weight:600;cursor:pointer;
+      transition: transform var(--transition-duration) ease, box-shadow var(--transition-duration) ease;
+    }
+    .btn:active{transform:translateY(1px)}
+
+    /* Respect reduced motion by disabling transforms */
+    @media (prefers-reduced-motion: reduce){
+      .btn, .switch-control, .switch-handle{transition:none}
+    }
+
+    /* Skip link for keyboard users */
+    .skip-link{
+      position:absolute;left:8px;top:8px;padding:8px 12px;background:#000;color:#fff;border-radius:6px;z-index:100;
+      transform:translateY(-120%);opacity:0;transition:transform 180ms ease,opacity 180ms ease;
+    }
+    .skip-link:focus{transform:translateY(0);opacity:1}
+
+    /* Small helper text */
+    .note{font-size:0.9rem;color:var(--muted)}
+
+    /* Make sure focus-visible is prominent for keyboard users */
+    :focus{outline-offset:3px}
+
+    /* Responsive tweaking */
+    @media (max-width:520px){
+      .container{padding:16px;margin:22px auto}
+      header{flex-direction:column;align-items:flex-start;gap:12px}
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Zur Hauptinhalte springen</a>
+
+  <div class="container">
+    <header>
+      <div>
+        <h1 id="site-title">Beispielseite: Darkmode (barrierefrei)</h1>
+        <p class="note">Ein kleines Beispiel mit einem zugänglichen Darkmode-Schalter.</p>
+      </div>
+
+      <div class="switch" aria-hidden="false">
+        <!-- The native checkbox is visually hidden but remains accessible to assistive tech -->
+        <input id="theme-toggle" class="visually-hidden" type="checkbox" aria-label="Darkmode umschalten" role="switch" aria-checked="false">
+
+        <!-- Styled switch that visually represents the state -->
+        <div class="switch-control" aria-hidden="true">
+          <div class="switch-handle" aria-hidden="true"></div>
+        </div>
+
+        <label for="theme-toggle" class="switch-label" id="theme-toggle-label">Light</label>
+      </div>
+    </header>
+
+    <main id="main" tabindex="-1" aria-labelledby="site-title">
+      <p>Dies ist ein Paragraph, der demonstriert, wie Texte in beiden Helligkeitsmodi gut lesbar bleiben. Achte auf starke Kontraste und klare Fokuszustände.</p>
+
+      <div class="hero-actions">
+        <button class="btn" id="action-btn">Aktion ausführen</button>
+        <span class="note">Tastaturtip: Tab zum Schalter, Enter/Leertaste zum Umschalten.</span>
+      </div>
+
+      <!-- Live region to announce theme changes to screen readers -->
+      <div id="announcer" aria-live="polite" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;"> </div>
+    </main>
+  </div>
+
+  <script>
+    // Accessible Darkmode script
+    (function(){
+      const toggle = document.getElementById('theme-toggle');
+      const label = document.getElementById('theme-toggle-label');
+      const announcer = document.getElementById('announcer');
+      const storageKey = 'theme';
+
+      // Determine initial theme: 1) localStorage 2) prefers-color-scheme 3) default to light
+      function getPreferredTheme(){
+        try{
+          const saved = localStorage.getItem(storageKey);
+          if(saved === 'dark' || saved === 'light') return saved;
+        }catch(e){/* localStorage kann in privaten Modi blockiert sein */}
+
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        return prefersDark ? 'dark' : 'light';
+      }
+
+      function applyTheme(theme, persist = false){
+        const root = document.documentElement;
+        root.setAttribute('data-theme', theme);
+
+        // Update the checkbox state and ARIA
+        const checked = theme === 'dark';
+        toggle.checked = checked;
+        toggle.setAttribute('aria-checked', String(checked));
+        label.textContent = checked ? 'Dark' : 'Light';
+
+        // Announce for screen readers
+        announcer.textContent = checked ? 'Dark mode aktiviert' : 'Light mode aktiviert';
+
+        if(persist){
+          try{ localStorage.setItem(storageKey, theme); }catch(e){/* ignore */}
+        }
+      }
+
+      // Toggle handler (keeps state in sync)
+      function handleToggle(e){
+        const next = e.target.checked ? 'dark' : 'light';
+        applyTheme(next, true);
+      }
+
+      // Init
+      const initial = getPreferredTheme();
+      applyTheme(initial);
+
+      // React to user interaction
+      toggle.addEventListener('change', handleToggle);
+
+      // Allow keyboard toggling on the visible switch-control as well
+      const visualSwitch = document.querySelector('.switch-control');
+      visualSwitch.addEventListener('keydown', function(e){
+        if(e.key === ' ' || e.key === 'Enter'){
+          e.preventDefault();
+          toggle.checked = !toggle.checked;
+          toggle.dispatchEvent(new Event('change', {bubbles:true}));
+        }
+      });
+      visualSwitch.setAttribute('tabindex','0');
+      visualSwitch.setAttribute('role','button');
+      visualSwitch.setAttribute('aria-label','Darkmode Umschalter (visuell)');
+
+      // Optional: if the system preference changes while the page is open, update (but don't overwrite a stored choice)
+      if(window.matchMedia){
+        const mm = window.matchMedia('(prefers-color-scheme: dark)');
+        mm.addEventListener && mm.addEventListener('change', function(e){
+          try{
+            if(!localStorage.getItem(storageKey)){
+              applyTheme(e.matches ? 'dark' : 'light');
+            }
+          }catch(err){/* ignore */}
+        });
+      }
+
+      // Example button action with accessible feedback
+      const actionBtn = document.getElementById('action-btn');
+      actionBtn.addEventListener('click', function(){
+        // This action updates the announcer so assistive tech is informed
+        announcer.textContent = 'Aktion ausgeführt';
+      });
+
+      // Ensure keyboard-only users can jump to main content (skip link)
+      const skip = document.querySelector('.skip-link');
+      skip.addEventListener('click', function(){
+        const main = document.getElementById('main');
+        main.focus();
+      });
+
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barrierefreie Navigation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <nav class="main-nav" aria-label="Hauptnavigation">
+            
+            <button class="nav-toggle" aria-controls="primary-navigation" aria-expanded="false">
+                <span class="visually-hidden">Menü</span>
+                <span class="hamburger-bar" aria-hidden="true"></span>
+                <span class="hamburger-bar" aria-hidden="true"></span>
+                <span class="hamburger-bar" aria-hidden="true"></span>
+            </button>
+            
+            <ul class="nav-menu" id="primary-navigation">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#allgemeines">Allgemeines</a></li>
+                <li><a href="#kontakt">Kontakt</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Willkommen auf der Webseite</h1>
+        <p>Dies ist der Hauptinhalt der Seite.</p>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

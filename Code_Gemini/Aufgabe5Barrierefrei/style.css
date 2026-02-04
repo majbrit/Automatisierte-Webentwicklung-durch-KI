@@ -1,0 +1,81 @@
+/* Grundlegendes Reset und Schriftart */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f9f9f9;
+    color: #333;
+    padding: 1em;
+}
+
+main {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Button-Styling */
+button {
+    font-size: 1rem;
+    padding: 0.5em 1em;
+    margin-bottom: 1em;
+    cursor: pointer;
+    background-color: #005ea5;
+    color: white;
+    border: none;
+    border-radius: 4px;
+}
+
+/* WICHTIG FÜR BARRIEREFREIHEIT:
+  ':focus-visible' zeigt einen klaren Umriss, wenn jemand 
+  mit der Tastatur (z.B. Tab-Taste) zum Button navigiert.
+  Es stört keine Maus-Benutzer.
+*/
+button:focus-visible {
+    outline: 3px solid #003a6c;
+    outline-offset: 2px;
+}
+
+/* Tabellen-Styling */
+table {
+    width: 100%;
+    border-collapse: collapse; /* Entfernt doppelte Ränder */
+    margin-top: 1em;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 'caption' Styling. 
+  'caption-side: bottom;' ist auch eine Option, aber 'top' ist Standard.
+*/
+caption {
+    font-size: 1.2em;
+    font-weight: bold;
+    padding: 0.5em;
+    text-align: left;
+    caption-side: top;
+}
+
+/* Styling für alle Zellen (Header und Daten) */
+th,
+td {
+    padding: 0.75em;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+/* Spezielles Styling für Kopfzellen */
+thead th {
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Zebrastreifen für bessere Lesbarkeit in 'tbody' */
+tbody tr:nth-child(even) {
+    background-color: #fcfcfc;
+}
+
+/* Diese Klasse wird per JavaScript hinzugefügt, 
+  um Elemente barrierefrei zu verstecken.
+*/
+.visually-hidden {
+    display: none;
+}

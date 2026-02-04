@@ -1,0 +1,53 @@
+/* Grundlegendes Zurücksetzen und Schriftart */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+/* Styling für die Navigationsleiste (den Container) */
+.navbar {
+    background-color: #333; /* Dunkler Hintergrund */
+    padding: 1rem;
+    position: sticky; /* Hält die Leiste beim Scrollen oben */
+    top: 0;
+    width: 100%;
+    box-sizing: border-box; /* Stellt sicher, dass padding die Breite nicht beeinflusst */
+}
+
+/* Styling für die Link-Liste (das <ul>-Element) */
+.nav-links {
+    list-style: none; /* Entfernt die Aufzählungspunkte */
+    margin: 0;
+    padding: 0;
+    display: flex; /* Ordnet die Links horizontal an */
+    justify-content: center; /* Zentriert die Links in der Leiste */
+}
+
+/* Styling für die einzelnen Links (die <a>-Elemente) */
+.nav-link {
+    color: white; /* Weiße Schriftfarbe */
+    text-decoration: none; /* Entfernt die Unterstreichung */
+    padding: 0.8rem 1.5rem; /* Innenabstand für Klickfläche */
+    margin: 0 0.5rem; /* Außenabstand zwischen den Links */
+    border-radius: 5px; /* Abgerundete Ecken */
+    transition: background-color 0.3s ease; /* Sanfter Übergang für Hover */
+}
+
+/* Hover-Effekt: Ändert die Hintergrundfarbe, wenn man mit der Maus darüberfährt */
+.nav-link:hover {
+    background-color: #555;
+}
+
+/* "active"-Klasse: Hebt den aktuell ausgewählten Link hervor */
+.nav-link.active {
+    background-color: #007bff; /* Helle Akzentfarbe */
+    font-weight: bold;
+}
+
+/* Styling für den Hauptinhalt (nur zur Demonstration) */
+main {
+    padding: 2rem;
+    height: 150vh; /* Macht die Seite scrollbar, um den "sticky"-Effekt zu zeigen */
+}

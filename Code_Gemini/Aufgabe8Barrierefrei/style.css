@@ -1,0 +1,147 @@
+/* Grundlegende Stile und Schriftarten */
+body {
+    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+    font-size: 18px; /* Gute Lesbarkeit */
+    line-height: 1.6;
+    background-color: #FFFBEA; /* Ein warmer, heller Hintergrund */
+    color: #333; /* Dunkler Text für guten Kontrast */
+    margin: 0;
+    padding: 0;
+}
+
+/* Barrierefreiheit: Der Skip-Link
+  Normalerweise unsichtbar, aber sichtbar beim Fokussieren mit der Tab-Taste.
+*/
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: #3498DB; /* Helles Blau */
+    color: white;
+    padding: 8px;
+    z-index: 100;
+    transition: top 0.3s;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+/* Barrierefreiheit: Deutlicher Fokus-Stil 
+  Zeigt Tastaturbenutzern, wo sie sich befinden.
+*/
+a:focus-visible,
+button:focus-visible {
+    outline: 4px solid #E74C3C; /* Auffälliges Rot */
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* Seiten-Layout */
+main {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 0 15px;
+}
+
+/* Bunte "Karten" für den Inhalt */
+.card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    border: 3px solid #333;
+}
+
+/* Header-Gestaltung */
+.site-header {
+    background-color: #F1C40F; /* Kräftiges Gelb */
+    color: #2C3E50; /* Dunkelblau */
+    text-align: center;
+    padding: 20px 10px;
+    border-bottom: 5px solid #E67E22; /* Orange */
+}
+
+.site-header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+}
+
+.site-header .subtitle {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* Einzelne Sektionen */
+.how-to { border-color: #2ECC71; } /* Grün */
+.fun-facts { border-color: #E74C3C; } /* Rot */
+.interactive { border-color: #3498DB; } /* Blau */
+
+h2 {
+    color: #E74C3C; /* Rot */
+    margin-top: 0;
+}
+
+/* Listen-Stile */
+ul, ol {
+    padding-left: 30px;
+}
+
+li {
+    margin-bottom: 10px;
+}
+
+/* Interaktiver Button */
+#tipButton {
+    background-color: #3498DB; /* Blau */
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+#tipButton:hover {
+    background-color: #2980B9; /* Dunkleres Blau */
+    transform: scale(1.05);
+}
+
+/* Animation für den Button */
+#tipButton:active {
+    transform: scale(0.95);
+}
+
+/* Barrierefreiheit: Bewegung reduzieren
+  Wenn der Benutzer dies wünscht, werden Hover-Animationen deaktiviert.
+*/
+@media (prefers-reduced-motion: reduce) {
+    #tipButton:hover {
+        transform: none;
+    }
+}
+
+/* Die Box, in der der Tipp erscheint */
+.tip-box {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #ECF0F1; /* Hellgrau */
+    border-radius: 8px;
+    font-style: italic;
+    font-weight: bold;
+    color: #2C3E50;
+    min-height: 20px; /* Stellt sicher, dass die Box sichtbar ist */
+}
+
+/* Footer-Gestaltung */
+.site-footer {
+    text-align: center;
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #2C3E50; /* Dunkelblau */
+    color: #ECF0F1; /* Hellgrau */
+}

@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Barrierefreier Lautstärkeregler</title>
+  <style>
+    :root{
+      --track-height:8px;
+      --thumb-size:20px;
+      --accent:#0078d4;
+      --muted:#888;
+      --bg:#f7f7f7;
+      --focus: 3px solid rgba(0,120,212,0.25);
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+    }
+
+    body{margin:20px;background:var(--bg);color:#111}
+    .card{max-width:720px;margin:0 auto;background:white;padding:20px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,0.06)}
+    h1{font-size:1.25rem;margin:0 0 12px}
+    p{margin:0 0 18px;color:#333}
+
+    .controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+
+    /* Native <input type=range> appearance reset so we can style while keeping accessibility */
+    .volume{
+      display:flex;gap:12px;align-items:center;width:100%;
+    }
+
+    .range-wrap{flex:1;min-width:200px}
+
+    input[type="range"]{
+      -webkit-appearance:none;width:100%;height:var(--thumb-size);background:transparent;margin:0;padding:0;
+    }
+
+    /* Track */
+    input[type="range"]::-webkit-slider-runnable-track{
+      height:var(--track-height);background:#e6e6e6;border-radius:999px;position:relative;
+    }
+    input[type="range"]::-moz-range-track{height:var(--track-height);background:#e6e6e6;border-radius:999px}
+
+    /* Fill (using background gradient on the track for most browsers) */
+    .range-progress{height:var(--track-height);border-radius:999px;background:linear-gradient(90deg,var(--accent) 0%, var(--accent) 0%, #e6e6e6 0%);}
+
+    /* Thumb */
+    input[type="range"]::-webkit-slider-thumb{
+      -webkit-appearance:none;width:var(--thumb-size);height:var(--thumb-size);border-radius:50%;background:white;border:2px solid var(--accent);margin-top:calc((var(--track-height) - var(--thumb-size))/2);
+      box-shadow:0 1px 2px rgba(0,0,0,0.15);
+    }
+    input[type="range"]::-moz-range-thumb{width:var(--thumb-size);height:var(--thumb-size);border-radius:50%;background:white;border:2px solid var(--accent)}
+
+    /* Focus styles */
+    input[type="range"]:focus{outline:none}
+    input[type="range"]:focus::-webkit-slider-thumb{box-shadow:0 0 0 6px rgba(0,120,212,0.12),0 1px 2px rgba(0,0,0,0.15)}
+
+    /* Buttons */
+    .btn{display:inline-flex;align-items:center;justify-content:center;padding:8px 10px;border-radius:8px;border:1px solid #ddd;background:white;cursor:pointer;font-size:0.95rem}
+    .btn:focus{outline:none;box-shadow:var(--focus)}
+    .btn[aria-pressed="true"]{background:#eef6ff;border-color:var(--accent)}
+
+    .visually-hidden{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap}
+
+    /* Numeric input */
+    .num{width:72px}
+    input[type="number"]{width:100%;padding:8px;border-radius:8px;border:1px solid #ccc}
+    input[type="number"]:focus{outline:none;box-shadow:var(--focus)}
+
+    /* Small helper row */
+    .meta{display:flex;gap:8px;align-items:center;margin-top:12px;font-size:0.95rem;color:#444}
+
+    @media (prefers-reduced-motion: reduce){*{transition:none!important}}
+  </style>
+</head>
+<body>
+  <main class="card" id="main">
+    <h1 id="title">Barrierefreier Lautstärkeregler</h1>
+    <p>Ändere die Lautstärke mit Maus, Touch oder Tastatur. Unterstützt Screenreader-Ansagen, Tastensteuerung (Pfeile, PageUp/Down, Home/End) sowie Stummschaltung.</p>
+
+    <div class="volume" aria-labelledby="title">
+      <div class="range-wrap">
+        <label for="volRange" id="volLabel">Lautstärke</label>
+
+        <!-- wrapper mit progress-fill zur visuellen Füllung -->
+        <div style="position:relative;">
+          <div class="range-progress" id="rangeProgress" aria-hidden="true"></div>
+
+          <input
+            id="volRange"
+            type="range"
+            min="0"
+            max="100"
+            step="1"
+            value="75"
+            aria-labelledby="volLabel"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="75"
+            aria-live="polite"
+          />
+        </div>
+
+        <!-- Live region für Screenreader (visually hidden) - announces when value changes, polite so it doesn't interrupt -->
+        <div id="srLive" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;">
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button class="btn" id="decBtn" aria-label="Lautstärke verringern">−</button>
+          <button class="btn" id="incBtn" aria-label="Lautstärke erhöhen">+</button>
+        </div>
+
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input id="numInput" class="num" type="number" min="0" max="100" step="1" value="75" aria-label="Lautstärke numerisch" />
+          <button class="btn" id="muteBtn" aria-pressed="false" aria-label="Stummschalten">🔈</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="meta">
+      <span id="stateText">Aktuell: <strong id="currentVal">75</strong>%</span>
+      <span aria-hidden="true">•</span>
+      <span id="hint">Tasten: ← → / ↑ ↓ zum Einstellen, Home/End für 0/100, PageUp/Down ±10</span>
+    </div>
+  </main>
+
+  <script>
+    (function(){
+      const range = document.getElementById('volRange');
+      const num = document.getElementById('numInput');
+      const dec = document.getElementById('decBtn');
+      const inc = document.getElementById('incBtn');
+      const mute = document.getElementById('muteBtn');
+      const srLive = document.getElementById('srLive');
+      const currentVal = document.getElementById('currentVal');
+      const progress = document.getElementById('rangeProgress');
+
+      // initialize visuals
+      function updateProgress(value){
+        const pct = Math.round((value - +range.min) / (range.max - range.min) * 100);
+        // use gradient width to simulate filled track for browsers where track styling is limited
+        progress.style.width = pct + '%';
+        progress.style.background = `linear-gradient(90deg, var(--accent) 0%, var(--accent) ${pct}%, #e6e6e6 ${pct}%)`;
+      }
+
+      function announce(message){
+        // writes into an aria-live element to be announced by screen readers
+        srLive.textContent = message;
+      }
+
+      function setValue(v, options={announce:true}){
+        const prev = +range.value;
+        let value = Math.max(+range.min, Math.min(+range.max, Math.round(v)));
+        range.value = value;
+        range.setAttribute('aria-valuenow', String(value));
+        num.value = value;
+        currentVal.textContent = value;
+        updateProgress(value);
+
+        if(options.announce){
+          if(value === 0){
+            announce('Lautstärke ' + value + ' Prozent, stumm');
+          } else {
+            announce('Lautstärke ' + value + ' Prozent');
+          }
+        }
+      }
+
+      // keyboard helpers for non-range controls
+      function changeBy(delta){
+        const newVal = +range.value + delta;
+        setValue(newVal);
+        // turn off mute automatically when increasing volume
+        if(delta > 0 && mute.getAttribute('aria-pressed') === 'true'){
+          mute.setAttribute('aria-pressed','false');
+          mute.textContent = '🔈';
+        }
+      }
+
+      // events
+      range.addEventListener('input', e=>{
+        setValue(e.target.value, {announce:false}); // don't over-announce on every tiny movement
+        // announce at the end of interaction using change event
+      });
+
+      range.addEventListener('change', e=>{
+        setValue(e.target.value, {announce:true});
+      });
+
+      // provide additional keyboard handling: PageUp/Down, Home/End
+      range.addEventListener('keydown', e=>{
+        if(e.key === 'PageUp'){
+          e.preventDefault(); changeBy(10);
+        } else if(e.key === 'PageDown'){
+          e.preventDefault(); changeBy(-10);
+        } else if(e.key === 'Home'){
+          e.preventDefault(); setValue(range.min);
+        } else if(e.key === 'End'){
+          e.preventDefault(); setValue(range.max);
+        }
+      });
+
+      inc.addEventListener('click', ()=>changeBy(1));
+      dec.addEventListener('click', ()=>changeBy(-1));
+
+      num.addEventListener('change', ()=>{
+        // sanitize numeric entry
+        const v = Number(num.value);
+        if(Number.isNaN(v)) return setValue(range.value);
+        setValue(v);
+      });
+
+      // mute toggle: remember previous value to restore
+      let lastNonZero = +range.value || 75;
+      mute.addEventListener('click', ()=>{
+        const pressed = mute.getAttribute('aria-pressed') === 'true';
+        if(pressed){
+          // unmute
+          mute.setAttribute('aria-pressed','false');
+          mute.textContent = '🔈';
+          setValue(lastNonZero);
+        } else {
+          // mute
+          lastNonZero = +range.value || lastNonZero;
+          mute.setAttribute('aria-pressed','true');
+          mute.textContent = '🔇';
+          setValue(0);
+        }
+      });
+
+      // accessible name helpers: link buttons to the range control for assistive tech
+      dec.setAttribute('aria-controls', 'volRange');
+      inc.setAttribute('aria-controls', 'volRange');
+      mute.setAttribute('aria-controls', 'volRange');
+
+      // initialize
+      updateProgress(range.value);
+      setValue(range.value, {announce:false});
+
+      // expose for debugging in dev console (optional)
+      window._accessibleVolume = {get value(){return +range.value;}, setValue};
+    })();
+  </script>
+</body>
+</html>

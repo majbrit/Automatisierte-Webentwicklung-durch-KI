@@ -1,0 +1,78 @@
+/* Globale Stile und Box-Sizing */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Header und Footer Styling */
+header, footer {
+    background-color: #333;
+    color: #fff;
+    padding: 1rem;
+    text-align: center;
+}
+
+/* * Layout-Container (Flexbox)
+ * Dies ist der wichtigste Teil für die zwei Spalten.
+ */
+.container {
+    display: flex;
+    max-width: 1200px;
+    margin: 1.5rem auto;
+    padding: 0 1rem;
+    gap: 1.5rem; /* Abstand zwischen den Spalten */
+}
+
+/* Hauptinhalt (linke Spalte) */
+.main-content {
+    /* Nimmt 2 Drittel des verfügbaren Platzes ein */
+    flex: 2; 
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 5px;
+}
+
+/* Seitenleiste (rechte Spalte) */
+.sidebar {
+    /* Nimmt 1 Drittel des verfügbaren Platzes ein */
+    flex: 1;
+    background: #e9e9e9;
+    padding: 1.5rem;
+    border-radius: 5px;
+}
+
+.sidebar ul {
+    list-style-position: inside;
+}
+
+.sidebar button {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.sidebar button:hover {
+    background-color: #555;
+}
+
+/* * Responsive Design
+ * Auf Bildschirmen, die 768px oder schmaler sind:
+ */
+@media (max-width: 768px) {
+    .container {
+        /* Ändert die Richtung von horizontal (row) zu vertikal (column) */
+        flex-direction: column;
+    }
+}

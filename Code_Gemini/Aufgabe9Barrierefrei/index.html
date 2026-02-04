@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optische Täuschungen in Pink & Grün</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Optische Täuschungen in Pink & Grün</h1>
+    </header>
+
+    <main>
+
+        <section aria-labelledby="contrast-title">
+            <h2 id="contrast-title">1. Simultaner Kontrast</h2>
+            <p id="contrast-desc">
+                Das innere pinke Quadrat hat in beiden Kästen <strong>exakt dieselbe Farbe</strong>. 
+                Durch den unterschiedlichen Hintergrund (Grün vs. Hellpink) nimmt unser Gehirn die Farbe jedoch unterschiedlich wahr.
+            </p>
+            <div class="illusion-container contrast-container" aria-describedby="contrast-desc">
+                <figure>
+                    <div class="contrast-box green-bg">
+                        <div class="center-square"></div>
+                    </div>
+                    <figcaption>Pink auf Grün</figcaption>
+                </figure>
+                <figure>
+                    <div class="contrast-box pink-bg">
+                        <div class="center-square"></div>
+                    </div>
+                    <figcaption>Pink auf Hellpink</figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <section aria-labelledby="hermann-title">
+            <h2 id="hermann-title">2. Hermann-Gitter-Täuschung</h2>
+            <p id="hermann-desc">
+                Betrachte das Gitter. Siehst du schwache, graue Flecken an den Kreuzungen der pinken "Straßen"? 
+                Diese "Geisterflecken" verschwinden, sobald du eine Kreuzung direkt fixierst.
+            </p>
+            <div class="illusion-container" aria-describedby="hermann-desc">
+                <div class="hermann-grid">
+                    </div>
+            </div>
+        </section>
+
+        <section aria-labelledby="phi-title">
+            <h2 id="phi-title">3. Apparente Bewegung</h2>
+            <p id="phi-desc">
+                Obwohl sich keiner der Punkte bewegt, erzeugt das schnelle, abwechselnde Aufleuchten die Illusion einer Bewegung.
+                Diese Animation wird automatisch angehalten, wenn du "Bewegung reduzieren" in deinen Systemeinstellungen aktiviert hast.
+            </p>
+            <div class="illusion-container phi-container" aria-describedby="phi-desc">
+                <div class="phi-dot" id="dot1"></div>
+                <div class="phi-dot" id="dot2"></div>
+                <p class="motion-notice" id="motion-notice" style="display: none;">
+                    Animation pausiert, da "reduzierte Bewegung" aktiviert ist.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="script.js" defer></script>
+</body>
+</html>

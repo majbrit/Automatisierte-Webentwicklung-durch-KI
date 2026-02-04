@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Optische Täuschungen — Pink & Grün (Barrierefrei)</title>
+  <meta name="description" content="Barrierefreie Sammlung von optischen Täuschungen in Pink und Grün. Enthält Bedienelemente zum Anhalten, Geschwindigkeitsregelung und Textbeschreibungen." />
+  <style>
+    :root{
+      --pink: #ff4da6; /* kräftiges Pink */
+      --green: #00a86b; /* kräftiges Grün */
+      --bg: #ffffff;
+      --text: #0b0b0b;
+      --focus: #ffd166;
+      --control-bg: rgba(0,0,0,0.05);
+      --max-width: 1100px;
+    }
+
+    /* Global / Reset */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:var(--bg);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.35;
+      padding:1rem;
+      display:flex;
+      justify-content:center;
+    }
+
+    .wrap{
+      width:100%;
+      max-width:var(--max-width);
+    }
+
+    header{
+      display:flex;
+      gap:1rem;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:1rem;
+    }
+
+    h1{font-size:1.5rem;margin:.25rem 0}
+    p.lead{margin:0;color:#444}
+
+    /* Controls */
+    .controls{
+      display:flex;gap:.5rem;align-items:center;flex-wrap:wrap
+    }
+    .controls button, .controls input[type=range], .controls select{
+      padding:.4rem .6rem;border-radius:.5rem;border:1px solid rgba(0,0,0,0.12);background:var(--control-bg);
+      cursor:pointer;font-size:.95rem
+    }
+
+    button:focus, input:focus, select:focus{outline:3px solid var(--focus);outline-offset:2px}
+
+    main{display:grid;gap:1.25rem}
+
+    .card{
+      border-radius:12px;padding:1rem;background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(250,250,250,0.9));box-shadow:0 6px 18px rgba(0,0,0,0.06);
+    }
+
+    .illusion{
+      display:flex;flex-direction:column;gap:.75rem;align-items:stretch
+    }
+
+    .visual{
+      background:linear-gradient(180deg, rgba(255,255,255,0.6), rgba(250,250,250,0.6));
+      border-radius:10px;padding:1rem;display:flex;align-items:center;justify-content:center;min-height:220px;position:relative;overflow:hidden
+    }
+
+    .caption{font-size:.95rem;color:#333}
+
+    /* Visual specific styles */
+    /* 1 — Rotierender Spiral (CSS-Animation) */
+    .spiral{
+      width:280px;height:280px;border-radius:50%;position:relative;
+      display:grid;place-items:center
+    }
+    .spiral .rings{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,var(--pink) 0 25%, transparent 25% 50%, var(--green) 50% 75%, transparent 75% 100%);
+      transform:scale(.98);
+      animation:spin var(--speed, 12s) linear infinite;
+    }
+
+    @keyframes spin{to{transform:rotate(360deg) scale(.98)}}
+
+    /* Respect user prefers-reduced-motion */
+    @media (prefers-reduced-motion: reduce){
+      .spiral .rings{animation:none}
+    }
+
+    /* 2 — Café Wall (ligneares Raster, Pink/Grün) */
+    .cafe-wall{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;padding:6px}
+    .cafe-wall .tile{aspect-ratio:1/1;border-radius:3px}
+
+    /* 3 — Scintillating grid style using SVG */
+    .scint{width:100%;height:260px}
+
+    /* 4 — Motion-free optical lines (Hermann / Mach bands variant) */
+    .herring{
+      width:100%;height:120px;display:flex;flex-direction:column;gap:2px
+    }
+    .herring .bar{height:18px;border-radius:4px}
+
+    /* Colorblind-safe hint: add patterns as well (not just color) */
+    .pattern-overlay{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.12}
+
+    /* Accessibility helpers */
+    .sr-only{position:absolute;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap}
+
+    /* Focusable canvas alternative */
+    .visual:focus{outline:3px dashed var(--focus);outline-offset:6px}
+
+    /* Footer */
+    footer{font-size:.9rem;color:#555;padding-top:.5rem}
+
+    /* Responsive */
+    @media (min-width:700px){
+      main{grid-template-columns:1fr 1fr;align-items:start}
+      .spiral{width:340px;height:340px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap" id="page">
+    <header>
+      <div>
+        <h1>Optische Täuschungen — Pink &amp; Grün</h1>
+        <p class="lead">Barrierefreie Sammlung: Tastatursteuerung, Beschreibungen, Reduziere Bewegung, Kontrast-Optionen.</p>
+      </div>
+
+      <div class="controls" role="region" aria-label="Steuerung für Animationen">
+        <button id="toggleMotion" aria-pressed="false" aria-label="Animation pausieren">Pause</button>
+        <label for="speedRange" class="sr-only">Geschwindigkeit</label>
+        <input id="speedRange" type="range" min="2" max="40" value="12" step="1" aria-label="Geschwindigkeit der Animation"/>
+        <button id="highContrast" aria-pressed="false" aria-label="Hoher Kontrast">Hoher Kontrast</button>
+        <button id="descToggle" aria-expanded="false" aria-controls="descriptions" aria-label="Beschreibungen umschalten">Beschreibungen</button>
+      </div>
+    </header>
+
+    <main>
+      <!-- Spiral illusion -->
+      <section class="card illusion" aria-labelledby="spiralTitle">
+        <h2 id="spiralTitle">Rotierende Spirale</h2>
+        <div class="visual" tabindex="0" role="img" aria-labelledby="spiralTitle spiralDesc">
+          <div class="spiral" aria-hidden="true">
+            <div class="rings" style="--speed:12s"></div>
+          </div>
+          <svg class="pattern-overlay" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+            <defs><pattern id="dots" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1"/></pattern></defs>
+            <rect width="100" height="100" fill="url(#dots)"/>
+          </svg>
+        </div>
+        <p class="caption">Die scheinbare Rotation entsteht durch konzentrische Farbübergänge in Pink und Grün. Verwende die Steuerung, um die Animation anzuhalten oder die Geschwindigkeit zu verändern.</p>
+        <div id="spiralDesc" class="sr-only">Detaillierte Beschreibung: Ein kreisförmiges Muster mit konzentrischen Segmenten, die zwischen Pink und Grün wechseln. Beim Drehen wirken die Segmente wie eine kontinuierliche Spirale.</div>
+      </section>
+
+      <!-- Café wall illusion -->
+      <section class="card illusion" aria-labelledby="cafeTitle">
+        <h2 id="cafeTitle">Café Wall (Raster-Illusion)</h2>
+        <div class="visual" tabindex="0" role="img" aria-labelledby="cafeTitle cafeDesc">
+          <div class="cafe-wall" aria-hidden="true">
+            <!-- create 12x4 tiles with alternating offsets to create the illusion -->
+            <!-- We use extra elements for keyboard focus but keep them aria-hidden -->
+            <script type="application/json" id="_cafe-data">[12,4]</script>
+            <!-- tiles rendered by JS -->
+          </div>
+        </div>
+        <p class="caption">Das Raster mit versetzten Reihen erzeugt den Eindruck schräger Linien—obwohl alle Reihen gerade sind. Farben und leichte Schatten verstärken den Effekt.</p>
+        <div id="cafeDesc" class="sr-only">Detaillierte Beschreibung: Ein Feld aus pinken und grünen Quadraten in einem versetzten Raster, wodurch gerade horizontale Linien gebrochen erscheinen.</div>
+      </section>
+
+      <!-- Scintillating grid -->
+      <section class="card illusion" aria-labelledby="scintTitle">
+        <h2 id="scintTitle">Flimmerndes Gitter (SVG)</h2>
+        <div class="visual" tabindex="0" role="img" aria-labelledby="scintTitle scintDesc">
+          <svg class="scint" viewBox="0 0 400 260" role="img" aria-hidden="true">
+            <!-- Grid background -->
+            <rect width="400" height="260" fill="#fff"/>
+            <!-- horizontal and vertical bars -->
+            <g>
+              <defs>
+                <filter id="blur"><feGaussianBlur stdDeviation="0.8"/></filter>
+              </defs>
+              <!-- draw alternating squares -->
+              <!-- we'll fill via JS for clarity -->
+            </g>
+          </svg>
+        </div>
+        <p class="caption">Punkte zwischen Gitterlinien erscheinen und verschwinden, wenn man den Blick verschiebt — das nennt man scintillating grid.</p>
+        <div id="scintDesc" class="sr-only">Detaillierte Beschreibung: Ein regelmäßiges Gitter aus grünen und pinken Quadraten mit kleinen schwarzen Punkten an Kreuzungen, die flimmern.</div>
+      </section>
+
+      <!-- Hermann-like bands -->
+      <section class="card illusion" aria-labelledby="hermTitle">
+        <h2 id="hermTitle">Hermann &amp; Mach-Band-ähnliche Streifen</h2>
+        <div class="visual" tabindex="0" role="img" aria-labelledby="hermTitle hermDesc">
+          <div class="herring" aria-hidden="true">
+            <div class="bar" style="background:linear-gradient(90deg,var(--pink),var(--green));"></div>
+            <div class="bar" style="background:linear-gradient(90deg,var(--green),var(--pink));"></div>
+            <div class="bar" style="background:linear-gradient(90deg,var(--pink),var(--green));"></div>
+            <div class="bar" style="background:linear-gradient(90deg,var(--green),var(--pink));"></div>
+            <div class="bar" style="background:linear-gradient(90deg,var(--pink),var(--green));"></div>
+            <div class="bar" style="background:linear-gradient(90deg,var(--green),var(--pink));"></div>
+          </div>
+        </div>
+        <p class="caption">Die abwechselnden Farbbänder lassen helle und dunkle Kanten entstehen, die den Eindruck von Kontrastkanten erwecken.</p>
+        <div id="hermDesc" class="sr-only">Detaillierte Beschreibung: Mehrere horizontale Streifen mit Verlauf zwischen Pink und Grün. An den Übergängen erscheinen kontrastierende Kanten.</div>
+      </section>
+
+    </main>
+
+    <div id="descriptions" hidden>
+      <h3>Ausführliche Beschreibungen</h3>
+      <p>Hier finden Sie ausführliche, für Bildschirmleser geeignete Beschreibungen der einzelnen Illusionen.</p>
+    </div>
+
+    <footer>
+      <p>Hinweis: Wenn Sie Bewegungseffekte nicht vertragen, aktivieren Sie die Option "Beschreibungen" oder verwenden Sie die Einstellung "Reduziere Bewegung" in Ihrem Betriebssystem. Farbinformationen werden zusätzlich durch Muster unterstützt.</p>
+    </footer>
+  </div>
+
+  <script>
+    // Accessible controls behaviour
+    (function(){
+      const toggleBtn = document.getElementById('toggleMotion');
+      const speedInput = document.getElementById('speedRange');
+      const spiralRings = document.querySelector('.rings');
+      const highC = document.getElementById('highContrast');
+      const descToggle = document.getElementById('descToggle');
+      const descBox = document.getElementById('descriptions');
+      const page = document.getElementById('page');
+
+      // Initialize
+      let paused = false;
+      function updateAnimation(){
+        const s = Number(speedInput.value);
+        // set CSS custom property for speed
+        document.documentElement.style.setProperty('--speed', s + 's');
+        // update aria-live status
+        announce(`Animation: ${paused? 'gestoppt' : 'läuft'}, Geschwindigkeit ${s} Sekunden pro Umdrehung.`);
+      }
+
+      toggleBtn.addEventListener('click', ()=>{
+        paused = !paused;
+        toggleBtn.textContent = paused? 'Start' : 'Pause';
+        toggleBtn.setAttribute('aria-pressed', String(paused));
+        // stop animation by toggling animation-play-state
+        document.querySelectorAll('.rings').forEach(el=>{
+          el.style.animationPlayState = paused? 'paused' : 'running';
+        });
+        announce(paused? 'Animation angehalten.' : 'Animation gestartet.');
+      });
+
+      speedInput.addEventListener('input', ()=>{
+        updateAnimation();
+      });
+
+      highC.addEventListener('click', ()=>{
+        const pressed = highC.getAttribute('aria-pressed') === 'true';
+        highC.setAttribute('aria-pressed', String(!pressed));
+        document.documentElement.style.setProperty('--focus', !pressed? '#ffea00' : '#ffd166');
+        if(!pressed){
+          document.documentElement.style.setProperty('--control-bg', '#00000010');
+          document.body.style.backgroundColor = '#000';
+          document.body.style.color = '#fff';
+        } else {
+          document.documentElement.style.setProperty('--control-bg', 'rgba(0,0,0,0.05)');
+          document.body.style.backgroundColor = '';
+          document.body.style.color = '';
+        }
+        announce(!pressed? 'Hoher Kontrast aktiviert.' : 'Hoher Kontrast deaktiviert.');
+      });
+
+      descToggle.addEventListener('click', ()=>{
+        const expanded = descToggle.getAttribute('aria-expanded') === 'true';
+        descToggle.setAttribute('aria-expanded', String(!expanded));
+        descBox.hidden = expanded;
+        announce(!expanded? 'Beschreibungen sichtbar.' : 'Beschreibungen ausgeblendet.');
+      });
+
+      // Simple live region for announcements
+      const live = document.createElement('div');
+      live.setAttribute('aria-live','polite');
+      live.className='sr-only';
+      document.body.appendChild(live);
+      function announce(text){ live.textContent = text; }
+
+      // Build Cafe wall tiles (accessible via aria-hidden: false for screen readers will use description)
+      (function buildCafe(){
+        const wrap = document.querySelector('.cafe-wall');
+        const rows = 6; const cols = 12;
+        for(let r=0;r<rows;r++){
+          for(let c=0;c<cols;c++){
+            const tile = document.createElement('div');
+            tile.className='tile';
+            // alternate color
+            const even = (r+c)%2===0;
+            const color = even? 'var(--pink)':'var(--green)';
+            tile.style.background = color;
+            // offset every other row slightly by adding margin-left via transform
+            if(r%2===1){ tile.style.transform = 'translateX(12px)'; }
+            // add subtle box-shadow to increase perceived misalignment
+            tile.style.boxShadow = 'inset 0 0 0 1px rgba(0,0,0,0.06)';
+            tile.setAttribute('aria-hidden','true');
+            wrap.appendChild(tile);
+          }
+          // after each row break
+          const br = document.createElement('div');
+          br.style.gridColumn = '1 / -1';
+          br.style.height='2px';
+          br.setAttribute('aria-hidden','true');
+          wrap.appendChild(br);
+        }
+      })();
+
+      // Build Scintillating grid points in SVG
+      (function buildScint(){
+        const svg = document.querySelector('.scint');
+        const ns = 'http://www.w3.org/2000/svg';
+        const cols = 12; const rows = 8; const gapX = 32; const gapY = 28; const startX = 20; const startY = 20;
+        for(let r=0;r<rows;r++){
+          for(let c=0;c<cols;c++){
+            const x = startX + c*gapX;
+            const y = startY + r*gapY;
+            // square
+            const rect = document.createElementNS(ns,'rect');
+            rect.setAttribute('x', x-12);
+            rect.setAttribute('y', y-12);
+            rect.setAttribute('width', 24);
+            rect.setAttribute('height', 24);
+            rect.setAttribute('rx', 3);
+            rect.setAttribute('fill', (r+c)%2? 'var(--green)':'var(--pink)');
+            svg.appendChild(rect);
+            // small point to create scintillating effect
+            const circle = document.createElementNS(ns,'circle');
+            circle.setAttribute('cx', x);
+            circle.setAttribute('cy', y);
+            circle.setAttribute('r', 2.2);
+            circle.setAttribute('fill','black');
+            circle.style.opacity = (Math.random()*0.6 + 0.2).toString();
+            circle.style.filter='url(#blur)';
+            svg.appendChild(circle);
+          }
+        }
+      })();
+
+      // Keyboard shortcuts: space toggles pause; +/- speed
+      document.addEventListener('keydown', (e)=>{
+        if(e.code === 'Space'){
+          e.preventDefault(); toggleBtn.click();
+        } else if(e.key === '+' || e.key === '='){ // increase speed (faster spin -> lower seconds)
+          speedInput.value = Math.max(2, Number(speedInput.value) - 1);
+          updateAnimation();
+        } else if(e.key === '-' || e.key === '_'){
+          speedInput.value = Math.min(40, Number(speedInput.value) + 1);
+          updateAnimation();
+        }
+      });
+
+      // Initialize UI state
+      updateAnimation();
+
+      // Respect prefers-reduced-motion: if user prefers reduced motion, pause automatically
+      const prm = window.matchMedia('(prefers-reduced-motion: reduce)');
+      if(prm.matches){
+        paused = true;
+        toggleBtn.textContent = 'Start';
+        document.querySelectorAll('.rings').forEach(el=> el.style.animationPlayState = 'paused');
+        toggleBtn.setAttribute('aria-pressed', 'true');
+      }
+
+    })();
+  </script>
+</body>
+</html>

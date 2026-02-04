@@ -1,0 +1,172 @@
+/* Globale Einstellungen und Farbvariablen */
+:root {
+    --main-pink: #E91E63;    /* Ein kräftiges Pink */
+    --light-pink: #F8BBD0;   /* Ein blasses Pink */
+    --main-green: #4CAF50;   /* Ein sattes Grün */
+    --text-dark: #333;
+    --background-light: #fff;
+    --border-color: #f0f0f0;
+}
+
+/* Grundlegendes Resets und Schriftarten */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 100%; /* Basis für rem-Einheiten */
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    background-color: var(--background-light);
+    color: var(--text-dark);
+    margin: 0;
+    padding: 0;
+}
+
+/* Seitenlayout */
+header {
+    text-align: center;
+    padding: 1rem;
+    border-bottom: 2px solid var(--border-color);
+    color: var(--main-pink);
+}
+
+main {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+section {
+    margin-bottom: 3rem;
+}
+
+h1, h2 {
+    line-height: 1.2;
+}
+
+h2 {
+    color: var(--main-green);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+figure {
+    margin: 0;
+    text-align: center;
+    font-style: italic;
+    color: #555;
+}
+
+/* Basis-Container für alle Illusionen */
+.illusion-container {
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+    background-color: #fdfdfd;
+}
+
+
+/* --- 1. Simultaner Kontrast --- */
+.contrast-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 1.5rem;
+}
+
+.contrast-box {
+    width: 12rem;
+    height: 12rem;
+    display: grid;
+    place-items: center;
+    border-radius: 4px;
+}
+
+.green-bg {
+    background-color: var(--main-green);
+}
+
+.pink-bg {
+    background-color: var(--light-pink);
+}
+
+.center-square {
+    width: 5rem;
+    height: 5rem;
+    background-color: var(--main-pink); /* Dieselbe Farbe für beide! */
+}
+
+
+/* --- 2. Hermann-Gitter --- */
+.hermann-grid {
+    display: grid;
+    /* Erzeugt ein 6x6 Gitter */
+    grid-template-columns: repeat(6, 3rem);
+    grid-template-rows: repeat(6, 3rem);
+    
+    /* Die "Straßen" werden durch den Abstand und den Hintergrund erzeugt */
+    gap: 1rem;
+    background-color: var(--main-pink); /* Die pinken Straßen */
+    
+    /* Zentrierung */
+    justify-content: center;
+    
+    /* Sorgt dafür, dass der Hintergrund auch am Rand sichtbar ist */
+    padding: 1rem; 
+    border: 1px solid var(--main-pink);
+}
+
+.hermann-grid div {
+    /* Die grünen Quadrate */
+    background-color: var(--main-green);
+}
+
+
+/* --- 3. Apparente Bewegung --- */
+.phi-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4rem;
+    min-height: 6rem;
+    position: relative;
+}
+
+.phi-dot {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    
+    /* Standardmäßig inaktiv (blass) */
+    opacity: 0.1;
+    transition: opacity 0.1s ease-in-out;
+}
+
+#dot1 {
+    background-color: var(--main-pink);
+}
+
+#dot2 {
+    background-color: var(--main-green);
+}
+
+/* Aktiver Zustand wird per JS hinzugefügt */
+.phi-dot.active {
+    opacity: 1;
+}
+
+.motion-notice {
+    font-style: italic;
+    text-align: center;
+    width: 100%;
+    position: absolute;
+    bottom: -1rem;
+    color: #777;
+}

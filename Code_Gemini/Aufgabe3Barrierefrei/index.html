@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barrierefreies Anmeldeformular</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <main>
+        <div id="form-container">
+            <div id="form-status" role="alert" aria-live="assertive"></div>
+            
+            <form id="anmeldeformular" novalidate>
+                <fieldset>
+                    <legend>Anmeldeformular</legend>
+                    
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name" required>
+                        <div id="name-error" class="error-message" aria-live="polite"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">E-Mail:</label>
+                        <input type="email" id="email" name="email" required>
+                        <div id="email-error" class="error-message" aria-live="polite"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="age">Alter:</label>
+                        <input type="number" id="age" name="age" min="1" required>
+                        <div id="age-error" class="error-message" aria-live="polite"></div>
+                    </div>
+                    
+                    <button type="submit">Absenden</button>
+                </fieldset>
+            </form>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

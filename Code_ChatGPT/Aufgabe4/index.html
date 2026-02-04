@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Roter Button - Hallo Welt!</title>
+  <style>
+    :root{
+      --red: #c62828; /* kräftiges Rot */
+      --red-hover: #b71c1c;
+      --text-on-red: #ffffff;
+      --focus-ring: 3px solid rgba(198,40,40,0.25);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    html,body{
+      height:100%;
+      margin:0;
+      background: linear-gradient(180deg, #fafafa 0%, #f2f2f2 100%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .container {
+      text-align:center;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+      background: white;
+    }
+
+    .btn-red {
+      appearance: none;
+      border: none;
+      cursor: pointer;
+      display: inline-block;
+      padding: 0.75rem 1.25rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 10px;
+      background: linear-gradient(#e53935, var(--red));
+      color: var(--text-on-red);
+      transition: transform .08s ease, box-shadow .08s ease, filter .08s ease;
+      box-shadow: 0 6px 12px rgba(198,40,40,0.16), inset 0 -2px 0 rgba(0,0,0,0.06);
+      user-select: none;
+    }
+
+    .btn-red:hover { transform: translateY(-1px); filter: brightness(1.02); }
+    .btn-red:active { transform: translateY(0); filter: brightness(.98); box-shadow: 0 3px 8px rgba(0,0,0,0.12); }
+    .btn-red:focus { outline: none; box-shadow: 0 6px 12px rgba(198,40,40,0.16), var(--focus-ring); }
+
+    /* Barrierefreiheitstext */
+    .sr-only {
+      position: absolute !important;
+      height: 1px; width: 1px;
+      overflow: hidden;
+      clip: rect(1px, 1px, 1px, 1px);
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <main class="container" role="main">
+    <h1 style="margin:0 0 1rem 0; font-size:1.25rem;">Teste den roten Button</h1>
+
+    <!-- Der Button: klickbar und per Enter/Space zugänglich -->
+    <button id="helloBtn" class="btn-red" type="button" aria-label="Zeigt eine Nachricht">
+      Klicke mich
+    </button>
+
+    <p class="sr-only" id="alertHint">Beim Klick erscheint ein Alert mit dem Text "Hallo Welt!"</p>
+  </main>
+
+  <script>
+    // Zugriff auf den Button
+    const btn = document.getElementById('helloBtn');
+
+    // Klick-Ereignis => Alert mit "Hallo Welt!"
+    btn.addEventListener('click', () => {
+      alert("Hallo Welt!");
+    });
+
+    // Extra: Tastaturunterstützung (Enter/Space) ist bei <button> standardmäßig da,
+    // dieses Listener ist nur Demonstration/Redundanz und kann entfernt werden.
+    btn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        // Verhindere Doppelauslösung bei Space (standardmäßig führt Space "click" aus)
+        e.preventDefault();
+        btn.click();
+      }
+    });
+  </script>
+</body>
+</html>

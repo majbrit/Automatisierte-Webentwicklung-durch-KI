@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Barrierefreie Navigation — Beispiel</title>
+  <style>
+    :root{
+      --bg:#ffffff; --fg:#111111; --accent:#0b6efd; --muted:#6b7280; --focus: #ffb84d;
+      --nav-height:64px; --gap:16px;
+    }
+
+    /* Grundlayout */
+    html,body{height:100%;}
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+      background:var(--bg); color:var(--fg); line-height:1.5; -webkit-font-smoothing:antialiased;
+    }
+
+    /* Versteckter Skip-Link (sichtbar beim Fokussieren) */
+    .skip-link{position:absolute;left:0;top:0;padding:0.5rem 1rem;background:#000;color:#fff;z-index:1000;transform:translateY(-120%);transition:transform .18s ease;}
+    .skip-link:focus{transform:translateY(0);} 
+
+    /* Navigation */
+    header{background:linear-gradient(180deg,#f8fafc,#fff);box-shadow:0 1px 0 rgba(0,0,0,.04);}
+    .container{max-width:1100px;margin:0 auto;padding:0 1rem;display:flex;align-items:center;gap:var(--gap);height:var(--nav-height);}
+
+    .brand{font-weight:600;display:flex;align-items:center;gap:0.5rem}
+    .brand .logo{width:36px;height:36px;border-radius:6px;background:var(--accent);display:inline-block}
+
+    nav{margin-left:auto}
+    .nav-list{list-style:none;margin:0;padding:0;display:flex;gap:0.5rem;align-items:center}
+    .nav-list a{
+      display:inline-block;padding:0.5rem 0.75rem;border-radius:8px;text-decoration:none;color:var(--fg);
+      font-weight:500;outline-offset:3px;
+    }
+    .nav-list a:hover,.nav-list a:focus{background:#eef2ff}
+    .nav-list a[aria-current="page"]{background:var(--accent);color:white}
+
+    /* Focus sichtbar und kontrastreich */
+    a:focus{box-shadow:0 0 0 4px var(--focus)}
+    button:focus{box-shadow:0 0 0 4px var(--focus)}
+
+    /* Mobile: Hamburger */
+    .menu-toggle{display:none;background:transparent;border:1px solid transparent;padding:0.4rem;border-radius:8px}
+    .menu-toggle[aria-expanded="true"]{background:#eef2ff}
+
+    @media (max-width:720px){
+      .nav-list{position:absolute;right:1rem;top:var(--nav-height);flex-direction:column;background:white;padding:0.5rem;border-radius:8px;box-shadow:0 8px 20px rgba(16,24,40,.08);display:none}
+      .nav-list.show{display:flex}
+      .menu-toggle{display:inline-flex}
+    }
+
+    /* Main content */
+    main{max-width:1100px;margin:1.25rem auto;padding:0 1rem}
+    section{padding:1rem 0}
+
+    /* Hilfsklassen */
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  </style>
+</head>
+<body>
+  <!-- Skip link für Tastaturnutzer -->
+  <a class="skip-link" href="#main">Direkt zu Inhalt springen</a>
+
+  <header>
+    <div class="container">
+      <div class="brand">
+        <span class="logo" aria-hidden="true"></span>
+        <span class="visually-hidden sr-only">Beispielseite</span>
+        <span>Meine Website</span>
+      </div>
+
+      <!-- Hamburger für kleine Bildschirme -->
+      <button class="menu-toggle" aria-controls="primary-navigation" aria-expanded="false" aria-label="Hauptnavigation ein-/ausblenden">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+          <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      <!-- Semantische Navigation -->
+      <nav id="primary-navigation" aria-label="Hauptnavigation">
+        <ul class="nav-list" role="menubar">
+          <li role="none"><a role="menuitem" href="#home" id="link-home">Home</a></li>
+          <li role="none"><a role="menuitem" href="#allgemeines" id="link-allgemeines">Allgemeines</a></li>
+          <li role="none"><a role="menuitem" href="#kontakt" id="link-kontakt">Kontakt</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <section id="home" aria-labelledby="home-heading">
+      <h1 id="home-heading">Home</h1>
+      <p>Willkommen auf der Beispielseite mit einer barrierefreien Navigationsleiste.</p>
+    </section>
+
+    <section id="allgemeines" aria-labelledby="allgemeines-heading">
+      <h2 id="allgemeines-heading">Allgemeines</h2>
+      <p>Hier finden Sie allgemeine Informationen. Alle Links sind über die Tastatur erreichbar und nutzbar.</p>
+    </section>
+
+    <section id="kontakt" aria-labelledby="kontakt-heading">
+      <h2 id="kontakt-heading">Kontakt</h2>
+      <p>Kontaktinformationen oder ein Kontaktformular würden hier stehen.</p>
+    </section>
+  </main>
+
+  <script>
+    (function(){
+      const toggle = document.querySelector('.menu-toggle');
+      const navList = document.querySelector('.nav-list');
+      const links = document.querySelectorAll('.nav-list a');
+
+      // Toggle für mobile Ansicht
+      toggle && toggle.addEventListener('click', function(){
+        const expanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!expanded));
+        navList.classList.toggle('show');
+      });
+
+      // Schließe Menü bei Klick auf Link (mobile)
+      links.forEach(a => a.addEventListener('click', ()=>{
+        navList.classList.remove('show');
+        toggle && toggle.setAttribute('aria-expanded', 'false');
+      }));
+
+      // Aktivlink je nach Hash (zugänglich für Screenreader)
+      function setActiveFromHash(){
+        const hash = location.hash || '#home';
+        links.forEach(a => {
+          a.removeAttribute('aria-current');
+          if(a.getAttribute('href') === hash) a.setAttribute('aria-current','page');
+        });
+      }
+      window.addEventListener('hashchange', setActiveFromHash);
+      setActiveFromHash();
+
+      // Escape schließt das Menü
+      document.addEventListener('keydown', (e)=>{
+        if(e.key === 'Escape'){
+          navList.classList.remove('show');
+          toggle && toggle.setAttribute('aria-expanded','false');
+        }
+      });
+
+      // Wenn ein Bereich per Link angesprungen wird, Fokus auf den Hauptinhalt setzen (für Screenreader/Tastatur)
+      links.forEach(a => a.addEventListener('click', (e)=>{
+        const targetId = a.getAttribute('href').slice(1);
+        const target = document.getElementById(targetId);
+        if(target){
+          // kleine Verzögerung, damit der Browser zum Anker scrollt
+          setTimeout(()=>{
+            target.setAttribute('tabindex','-1');
+            target.focus({preventScroll:true});
+            // optional: tabindex entfernen, falls nicht erwünscht
+            target.removeAttribute('tabindex');
+          },10);
+        }
+      }));
+
+      // Unterstütze Nutzende mit reduziertem Motion-Setting
+      if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+        // keine Animationen — es gibt hier eh nur einfache Übergänge
+      }
+
+    })();
+  </script>
+</body>
+</html>

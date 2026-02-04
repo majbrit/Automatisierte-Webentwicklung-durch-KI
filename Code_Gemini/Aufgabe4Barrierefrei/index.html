@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barrierefreier Alert Button</title>
+
+    <style>
+        body {
+            /* Dient nur der Zentrierung des Buttons für die Demo */
+            display: grid;
+            place-items: center;
+            min-height: 90vh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        #alertButton {
+            /* * BARRIEREFREIHEIT (Kontrast): 
+             * Dieses Rot (#D90429) hat mit weißem Text (#FFFFFF) 
+             * ein Kontrastverhältnis von 4.75:1 und erfüllt 
+             * damit die WCAG AA-Anforderungen (mind. 4.5:1).
+             */
+            background-color: #D90429;
+            color: white;
+
+            /* Allgemeines Styling */
+            font-size: 1.1rem; /* Lesbare Schriftgröße */
+            font-weight: bold;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        /* Visuelles Feedback für Mausnutzer */
+        #alertButton:hover {
+            transform: scale(1.05);
+        }
+
+        /* * BARRIEREFREIHEIT (Fokus): 
+         * :focus-visible zeigt den Fokusring nur für Tastaturnutzer 
+         * (z.B. beim Navigieren mit der Tab-Taste) und nicht 
+         * bei Mausklicks. Der Ring ist deutlich sichtbar.
+         */
+        #alertButton:focus-visible {
+            outline: none; /* Standard-Outline entfernen */
+            box-shadow: 0 0 0 4px #005fcc; /* Deutlicher, eigener Fokus-Ring */
+        }
+    </style>
+</head>
+<body>
+
+    <button id="alertButton" type="button">
+        Alarm auslösen
+    </button>
+
+    <script>
+        // Sicherstellen, dass das HTML vollständig geladen ist
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // 1. Den Button über seine ID auswählen
+            const button = document.getElementById('alertButton');
+
+            // 2. Einen Event-Listener hinzufügen, der auf Klicks wartet
+            button.addEventListener('click', () => {
+                
+                // 3. Den gewünschten Alert anzeigen
+                alert('Hallo Welt!');
+            });
+        });
+    </script>
+
+</body>
+</html>

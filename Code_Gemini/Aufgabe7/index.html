@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lautstärkeregler</title>
+    <style>
+        /* ### CSS-Code ### */
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: grid;
+            place-items: center;
+            min-height: 100vh;
+            background-color: #f4f7f6;
+            margin: 0;
+            color: #333;
+        }
+
+        .slider-container {
+            width: 300px;
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        /* Der eigentliche Slider */
+        #volumeSlider {
+            -webkit-appearance: none; /* Entfernt Standard-Styling für Webkit */
+            appearance: none;
+            width: 100%; /* Volle Breite des Containers */
+            height: 8px; /* Höhe der Leiste */
+            background: #d3d3d3; /* Hintergrund der Leiste */
+            border-radius: 5px;
+            outline: none; /* Keinen blauen Rand bei Fokus */
+            opacity: 0.7;
+            transition: opacity .2s;
+        }
+
+        #volumeSlider:hover {
+            opacity: 1; /* Volle Deckkraft bei Hover */
+        }
+
+        /* Styling des "Griffs" (Thumb) für Webkit-Browser (Chrome, Safari) */
+        #volumeSlider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px; /* Breite des Griffs */
+            height: 20px; /* Höhe des Griffs */
+            background: #007aff; /* Farbe des Griffs */
+            border-radius: 50%; /* Macht den Griff rund */
+            cursor: pointer;
+        }
+
+        /* Styling des "Griffs" (Thumb) für Firefox */
+        #volumeSlider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #007aff;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none; /* Firefox fügt manchmal einen Rand hinzu */
+        }
+        
+        /* Anzeige des aktuellen Werts */
+        #volumeValue {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #007aff;
+            margin-top: 20px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="slider-container">
+        
+        <label for="volumeSlider">Lautstärkeregler</label>
+        
+        <input type="range" min="0" max="100" value="50" id="volumeSlider">
+        
+        <div id="volumeValue">50</div>
+    
+    </div>
+
+
+    <script>
+        /* ### JavaScript-Code ### */
+
+        // Warten, bis das HTML-Dokument vollständig geladen ist
+        document.addEventListener('DOMContentLoaded', (event) => {
+            
+            // 1. Die HTML-Elemente holen
+            const slider = document.getElementById('volumeSlider');
+            const valueDisplay = document.getElementById('volumeValue');
+            
+            // 2. Den Startwert beim Laden der Seite setzen
+            // (Der Wert wird aus dem 'value'-Attribut im HTML gelesen)
+            valueDisplay.textContent = slider.value;
+            
+            // 3. Ein Event-Listener hinzufügen, der bei JEDER Bewegung reagiert
+            // Das 'input'-Event feuert kontinuierlich, während man zieht.
+            slider.addEventListener('input', () => {
+                // Den Text im 'volumeValue'-Element mit dem
+                // aktuellen Wert des Sliders aktualisieren.
+                valueDisplay.textContent = slider.value;
+            });
+        });
+    </script>
+
+</body>
+</html>

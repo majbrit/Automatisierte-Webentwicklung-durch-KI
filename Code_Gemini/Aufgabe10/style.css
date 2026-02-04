@@ -1,0 +1,97 @@
+/* 1. Schriftarten von Google Fonts importieren */
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Merriweather:wght@300;400&display=swap');
+
+/* 2. CSS-Variablen für Farben und Schriftarten (das "ungewöhnliche" Schema) */
+:root {
+    --bg-color: #0A043C;       /* Sehr dunkles Marineblau */
+    --text-color: #FFF8F0;     /* Warmes Off-White */
+    --headline-color: #FF6B6B; /* Lebhaftes Korallrot */
+    --accent-color: #3DFFB0;   /* Leuchtendes Mintgrün */
+    
+    --font-headline: 'Abril Fatface', serif;
+    --font-body: 'Merriweather', serif;
+}
+
+/* 3. Globale Resets und Setup */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    /* Aktiviert das Scroll-Snapping für die Y-Achse (vertikal) */
+    scroll-snap-type: y mandatory;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    overflow-x: hidden; /* Verhindert horizontales Scrollen */
+}
+
+/* 4. Sektions-Styling */
+.full-screen {
+    height: 100vh; /* Jede Sektion füllt den Bildschirm */
+    width: 100vw;
+    
+    /* Zentrierung des Inhalts */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+    
+    /* Definiert, wo die Sektion "einrasten" soll */
+    scroll-snap-align: start;
+    position: relative;
+}
+
+.content-wrapper {
+    max-width: 800px;
+}
+
+/* 5. Typografie */
+h1 {
+    font-family: var(--font-headline);
+    font-size: clamp(3rem, 10vw, 6rem); /* Responsive Schriftgröße */
+    color: var(--headline-color);
+    margin-bottom: 1rem;
+    line-height: 1.1;
+}
+
+p {
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    font-weight: 300;
+}
+
+/* Besonderer Akzent für die letzte Sektion */
+#revelation p {
+    color: var(--accent-color);
+    font-weight: 400;
+}
+
+/* 6. JS-gesteuerte Animation (Der "Story unfolds"-Teil) */
+
+/* Standardzustand: Elemente sind unsichtbar und leicht nach unten verschoben */
+.story-section .content-wrapper > * {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+/* Sichtbarer Zustand: Wird durch JavaScript per Klasse .is-visible hinzugefügt */
+.story-section.is-visible .content-wrapper > h1 {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.story-section.is-visible .content-wrapper > p {
+    opacity: 1;
+    transform: translateY(0);
+    /* Eine kleine Verzögerung, damit der Text nach der Überschrift erscheint */
+    transition-delay: 0.3s;
+}

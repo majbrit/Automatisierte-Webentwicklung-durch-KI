@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Eine erzählerische One‑Page — Barrierefrei & Scroll</title>
+
+  <!-- Google Fonts (hochwertig, gut kombinierbar) -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,600&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <meta name="description" content="Eine barrierefreie One-Page Website: die Geschichte entfaltet sich beim Scrollen. Tastaturnavigation, reduzierte Bewegung, Kontrast- und Fokusstile enthalten." />
+
+  <style>
+    :root{
+      /* Ungewöhnliche, aber harmonische Farbkombinationen */
+      --bg: #0F172A;          /* sehr dunkles Nachtblau */
+      --card: linear-gradient(135deg,#101827 0%, #152033 100%);
+      --text: #F8FAFF;        /* sehr hell */
+      --muted: #9AA7BF;
+      --accent-1: #FF4DA6;    /* magenta */
+      --accent-2: #FFD166;    /* warmes gold/senf */
+      --accent-3: #2EC4B6;    /* türkis/grün */
+      --glass: rgba(255,255,255,0.04);
+      --focus: 3px solid #FFD166;
+
+      --max-width: 1100px;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    /* Reset-ish */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background: linear-gradient(180deg,var(--bg) 0%, #071223 60%);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.5;
+      -webkit-text-size-adjust:100%;
+    }
+
+    a{color:var(--accent-1); text-decoration:underline;}
+    a:focus{outline:none; box-shadow:var(--focus)}
+
+    /* Skip link for screen reader / keyboard users */
+    .skip-link{
+      position: absolute;
+      left: -999px;
+      top: auto;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+    .skip-link:focus{
+      left: 1rem; top: 1rem; width:auto; height:auto; padding:0.5rem 0.75rem; background:var(--accent-2); color:#071223; z-index:9999; border-radius:6px; text-decoration:none;
+    }
+
+    header{
+      padding:clamp(1rem,4vw,2rem) 1rem;
+      max-width:var(--max-width);
+      margin:0 auto;
+      display:flex; align-items:center; justify-content:space-between; gap:1rem;
+    }
+
+    .brand{
+      display:flex; align-items:baseline; gap:0.75rem;
+    }
+    .brand h1{
+      font-family: "Playfair Display", serif;
+      font-size: clamp(1.25rem, 2.6vw, 2rem);
+      margin:0; letter-spacing: -0.02em;
+    }
+    .brand .tag{
+      font-size:0.85rem; color:var(--muted);
+    }
+
+    nav{display:flex; gap:0.5rem; align-items:center}
+    nav a{background:transparent; border:1px solid rgba(255,255,255,0.04); padding:0.5rem 0.75rem; border-radius:8px; color:var(--text); text-decoration:none}
+    nav a:focus{box-shadow:var(--focus)}
+
+    main{max-width:var(--max-width); margin:2rem auto; padding:1rem}
+
+    /* Progress indicator (sticky) */
+    .progress-wrap{position:fixed; right:1.25rem; top:50%; transform:translateY(-50%); display:flex; flex-direction:column; gap:0.5rem; z-index:60}
+    .progress{width:14px; height:220px; background:var(--glass); border-radius:12px; padding:6px; display:flex; align-items:flex-end}
+    .progress > i{display:block; width:100%; background:linear-gradient(180deg,var(--accent-3), var(--accent-1)); border-radius:8px; height:0%; transition:height 400ms ease}
+
+    /* Section styles */
+    section.story-section{
+      margin:4rem 0; padding:clamp(1rem, 2vw, 2rem); background:var(--card); border-radius:18px; box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+      display:grid; grid-template-columns: 1fr; gap:1rem;
+    }
+
+    .section-inner{display:flex; gap:1.5rem; align-items:center}
+    .media{min-width:220px; flex:0 0 220px; padding:1rem; border-radius:12px; background:linear-gradient(135deg, rgba(255,77,166,0.08), rgba(46,196,182,0.04)); display:flex; align-items:center; justify-content:center}
+    .media img{max-width:100%; height:auto; border-radius:8px}
+
+    h2{font-family:"Playfair Display", serif; margin:0 0 0.25rem 0; font-size:clamp(1.25rem,2.6vw,1.8rem)}
+    p.lead{margin:0; color:var(--muted)}
+
+    /* Reveal animation classes */
+    .reveal{opacity:0; transform:translateY(18px) scale(0.995); transition:opacity 600ms cubic-bezier(.2,.9,.2,1), transform 600ms cubic-bezier(.2,.9,.2,1)}
+    .reveal.inview{opacity:1; transform:translateY(0) scale(1)}
+
+    /* Decorative hero */
+    .hero{
+      margin:1.5rem 0; padding:3rem 1rem; border-radius:20px; background: linear-gradient(120deg, rgba(255,77,166,0.06), rgba(46,196,182,0.04)); display:grid; grid-template-columns: 1fr; gap:1rem; align-items:center;
+    }
+    .hero .eyebrow{font-weight:600; color:var(--accent-2); letter-spacing:0.06em}
+    .hero h2{font-size:clamp(1.6rem,4vw,3rem); line-height:1.05}
+    .hero p{color:var(--muted); font-size:1.05rem}
+
+    footer{padding:2rem 1rem; color:var(--muted); text-align:center}
+
+    /* keyboard / reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      .reveal{transition:none !important}
+      .progress > i{transition:none}
+    }
+
+    /* responsive */
+    @media(min-width:820px){
+      .story-section{grid-template-columns: 1fr}
+      .section-inner{flex-direction:row}
+    }
+    @media(max-width:819px){
+      .media{display:none}
+      header{padding-bottom:0}
+    }
+
+    /* Strong focus visible for keyboard users */
+    :focus{outline:none}
+    .focus-ring:focus{box-shadow:var(--focus); border-radius:6px}
+
+    /* small helper */
+    .muted{color:var(--muted)}
+
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+
+  <header role="banner" aria-label="Seitenkopf">
+    <div class="brand">
+      <h1>Nordlicht &amp; Pixel</h1>
+      <div class="tag muted">Eine erzählerische One‑Page</div>
+    </div>
+
+    <nav role="navigation" aria-label="Hauptnavigation">
+      <a href="#story-1">Einleitung</a>
+      <a href="#story-2">Wende</a>
+      <a href="#story-3">Auflösung</a>
+      <a href="#footer">Kontakt</a>
+    </nav>
+  </header>
+
+  <div class="progress-wrap" aria-hidden="true">
+    <div class="progress" aria-hidden="true"><i></i></div>
+    <button id="motion-toggle" aria-pressed="false" title="Animationen an/aus" class="focus-ring">Pause</button>
+  </div>
+
+  <main id="main" role="main">
+
+    <section class="hero reveal" aria-labelledby="hero-title">
+      <div>
+        <div class="eyebrow">Willkommen</div>
+        <h2 id="hero-title">Die Geschichte entfaltet sich beim Scrollen</h2>
+        <p class="lead">Diese Seite erzählt eine kleine, visuellerzählte Reise: Abschnitte werden langsam sichtbar, Details erscheinen — alles barrierefrei und mit Rücksicht auf Nutzer:innen mit eingeschränkter Beweglichkeit.</p>
+      </div>
+    </section>
+
+    <section id="story-1" class="story-section" aria-labelledby="s1-title">
+      <div class="section-inner">
+        <figure class="media" aria-hidden="true">
+          <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='240'><rect width='100%' height='100%' fill='%230f172a'/><text x='50%' y='50%' fill='%23FFD166' font-size='20' font-family='Inter' text-anchor='middle' dominant-baseline='middle'>Szene I</text></svg>" alt="Illustration Szene 1"/>
+        </figure>
+
+        <div>
+          <h2 id="s1-title">I. Ein Flüstern im Morgen</h2>
+          <p class="lead">Am Anfang ist nur Farbe und Form. Beim Scrollen erwacht die Szene: leuchtende Akzente, ein Hauch von Bewegung, ein erster Ton.</p>
+          <p class="muted">Barrierefreiheit: strukturierte Überschriften, ausreichende Kontraste und Tastaturzugänglichkeit.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="story-2" class="story-section reveal" aria-labelledby="s2-title">
+      <div class="section-inner">
+        <figure class="media" aria-hidden="true">
+          <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='240'><rect width='100%' height='100%' fill='%23071a2b'/><text x='50%' y='50%' fill='%23FF4DA6' font-size='20' font-family='Inter' text-anchor='middle' dominant-baseline='middle'>Wende</text></svg>" alt="Illustration Szene 2"/>
+        </figure>
+
+        <div>
+          <h2 id="s2-title">II. Die Wende</h2>
+          <p class="lead">Kontraste schärfen sich, die Erzählung gewinnt Tiefe. Elemente treten hervor — rhythmisch, aber kontrolliert.</p>
+          <p class="muted">Die Animationen sind mit <code>prefers-reduced-motion</code> kompatibel; Nutzer:innen können außerdem alle Bewegungen über den Schalter rechts ausschalten.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="story-3" class="story-section reveal" aria-labelledby="s3-title">
+      <div class="section-inner">
+        <figure class="media" aria-hidden="true">
+          <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='240'><rect width='100%' height='100%' fill='%23041725'/><text x='50%' y='50%' fill='%232EC4B6' font-size='20' font-family='Inter' text-anchor='middle' dominant-baseline='middle'>Auflösung</text></svg>" alt="Illustration Szene 3"/>
+        </figure>
+
+        <div>
+          <h2 id="s3-title">III. Auflösung</h2>
+          <p class="lead">Das Ende bringt Ruhe. Informationen bleiben zugänglich: klare Struktur, sinnvolle Semantik, Textalternativen für grafische Elemente.</p>
+          <p class="muted">Tastaturzentrierte Navigation und sichtbare Fokuszustände erleichtern die Bedienung mit Hilfsmitteln.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="story-section reveal" aria-labelledby="features-title">
+      <div>
+        <h2 id="features-title">Accessibility & Features</h2>
+        <ul>
+          <li>Skip-Link &amp; semantische Landmarken (header, main, footer)</li>
+          <li>Prefers-reduced-motion Unterstützung</li>
+          <li>Keyboard‑freundliche Fokus-Stile</li>
+          <li>Aria‑Labels, beschreibende Linktexte und strukturierte Überschriften</li>
+          <li>Kontrastorientierte Farben mit auffälligen Akzenten</li>
+        </ul>
+      </div>
+    </section>
+
+    <footer id="footer" role="contentinfo">
+      <p>© <time datetime="2025-11-02">2025</time> — Erstellt als Beispielprojekt. <a href="#main">Nach oben</a></p>
+    </footer>
+
+  </main>
+
+  <script>
+    /* Accessibility-first: respektiere prefers-reduced-motion */
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // IntersectionObserver für Reveal-On-Scroll
+    const reveals = document.querySelectorAll('.reveal');
+    const options = { root: null, rootMargin: '0px 0px -10% 0px', threshold: 0.12 };
+
+    function onIntersection(entries, observer){
+      for(const entry of entries){
+        if(entry.isIntersecting){
+          entry.target.classList.add('inview');
+          // optional: markiere als fertig (performance)
+          observer.unobserve(entry.target);
+        }
+      }
+    }
+
+    if(!prefersReduced){
+      const io = new IntersectionObserver(onIntersection, options);
+      reveals.forEach(el => io.observe(el));
+    } else {
+      // Wenn reduzierte Bewegung, alle reveals sofort sichtbar
+      reveals.forEach(el => el.classList.add('inview'));
+    }
+
+    // Scroll-Progress auf der progress-bar
+    const progressBar = document.querySelector('.progress > i');
+    function updateProgress(){
+      const docH = document.documentElement.scrollHeight - window.innerHeight;
+      const scrolled = (window.scrollY / (docH || 1)) * 100;
+      progressBar.style.height = Math.min(Math.max(scrolled, 2), 100) + '%';
+    }
+    window.addEventListener('scroll', updateProgress, {passive:true});
+    updateProgress();
+
+    // Motion toggle (zugänglich)
+    const motionBtn = document.getElementById('motion-toggle');
+    let motionEnabled = !prefersReduced;
+    function updateMotionState(){
+      motionBtn.textContent = motionEnabled ? 'Pause' : 'Play';
+      motionBtn.setAttribute('aria-pressed', (!motionEnabled).toString());
+      if(!motionEnabled){
+        // Deaktivieren: entferne Übergänge
+        reveals.forEach(el => el.classList.add('inview'));
+      } else {
+        // Aktivieren: falls Bereiche noch nicht inview und nicht reduced -> observe again
+        // (einfaches Verhalten: nicht rückgängig machen für bereits enthüllte Elemente)
+      }
+    }
+
+    motionBtn.addEventListener('click', () => {
+      motionEnabled = !motionEnabled;
+      updateMotionState();
+    });
+
+    // Tastaturzugänglichkeit: Tastensteuerung um Motion zu togglen (M)
+    document.addEventListener('keydown', (e) => {
+      if(e.key.toLowerCase() === 'm'){
+        motionBtn.click();
+      }
+    });
+
+    // Kleiner Hinweis: wenn der Browser keine IntersectionObserver unterstützt
+    if(!('IntersectionObserver' in window)){
+      reveals.forEach(el => el.classList.add('inview'));
+    }
+
+  </script>
+</body>
+</html>

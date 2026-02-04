@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barrierefreie Tabelle</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Beispiel einer barrierefreien Tabelle</h1>
+    </header>
+
+    <main>
+        <button id="toggleButton" 
+                aria-controls="datenTabelle" 
+                aria-expanded="true">
+            Tabelle ausblenden
+        </button>
+
+        <table id="datenTabelle">
+            <caption>
+                Monatliche Verkaufszahlen pro Region
+            </caption>
+            
+            <thead>
+                <tr>
+                    <th scope="col">Region</th>
+                    <th scope="col">Verkäufe (Januar)</th>
+                    <th scope="col">Verkäufe (Februar)</th>
+                </tr>
+            </thead>
+            
+            <tbody>
+                <tr>
+                    <td>Nord</td>
+                    <td>150</td>
+                    <td>170</td>
+                </tr>
+                <tr>
+                    <td>Süd</td>
+                    <td>210</td>
+                    <td>200</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

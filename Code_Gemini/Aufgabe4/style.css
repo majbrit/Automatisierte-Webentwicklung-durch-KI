@@ -1,0 +1,17 @@
+/* style.css */
+
+/* Wir wählen den Button über seine ID 'alertButton' aus */
+#alertButton {
+    background-color: red;  /* Die geforderte rote Hintergrundfarbe */
+    color: white;           /* Weiße Schriftfarbe für besseren Kontrast */
+    padding: 15px 25px;     /* Innenabstand für eine größere Klickfläche */
+    border: none;           /* Entfernt den Standard-Rand */
+    border-radius: 5px;     /* Leicht abgerundete Ecken */
+    font-size: 16px;        /* Größere Schrift */
+    cursor: pointer;        /* Zeigt eine Hand statt eines Pfeils beim Hover */
+}
+
+/* Ein kleiner Effekt, wenn man mit der Maus darüberfährt */
+#alertButton:hover {
+    background-color: darkred;
+}

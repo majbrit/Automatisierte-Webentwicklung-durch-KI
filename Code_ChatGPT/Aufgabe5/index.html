@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>3x3 Tabelle (inkl. Header)</title>
+  <style>
+    :root{
+      --bg:#f7f9fc;
+      --card:#ffffff;
+      --accent:#0f62fe;
+      --muted:#65748b;
+      --border:#e1e8f0;
+      --highlight:#fff4d9;
+    }
+    html,body{height:100%;margin:0;font-family:Inter, Roboto, Arial, sans-serif;background:var(--bg);color:#0b1a2b}
+    .container{max-width:840px;margin:40px auto;padding:20px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;box-shadow:0 6px 18px rgba(11,26,43,0.06)}
+    h1{font-size:20px;margin:0 0 12px}
+    p.lead{margin:0 0 16px;color:var(--muted);font-size:14px}
+
+    /* Table styles */
+    table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:15px}
+    caption{caption-side:top;text-align:left;font-weight:600;margin-bottom:10px}
+    thead th{background:linear-gradient(180deg,#f2f6ff,#eef4ff);padding:12px;border:1px solid var(--border);text-align:left}
+    tbody td{padding:12px;border:1px solid var(--border);vertical-align:middle}
+    tbody tr:hover{background:#fbfdff}
+    .selected{background:var(--highlight) !important}
+
+    /* small-screen adjustments */
+    @media (max-width:520px){
+      thead th, tbody td{padding:10px;font-size:14px}
+      .container{margin:16px}
+    }
+
+    /* small helper button */
+    .hint{display:inline-block;margin-top:12px;padding:8px 12px;border-radius:8px;background:#f0f4ff;color:var(--accent);font-weight:600;border:1px solid #dbe8ff}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>Beispiel: 3×3 Tabelle (inkl. Header)</h1>
+      <p class="lead">Die Tabelle besteht aus insgesamt <strong>3 Zeilen</strong> (einschließlich Header) und <strong>3 Spalten</strong>. Klicke auf eine Zeile, um sie hervorzuheben.</p>
+
+      <table id="myTable" aria-describedby="tableDesc">
+        <caption id="tableDesc">Kontakttabelle mit drei Spalten</caption>
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Position</th>
+            <th scope="col">E-Mail</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Anna Müller</td>
+            <td>Projektleitung</td>
+            <td>anna.mueller@example.com</td>
+          </tr>
+          <tr>
+            <td>Jonas Becker</td>
+            <td>Entwicklung</td>
+            <td>jonas.becker@example.com</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="hint">Tipp: JS fügt beim Klick auf eine Zeile eine visuelle Auswahl hinzu.</div>
+    </div>
+  </div>
+
+  <script>
+    // JavaScript: Zeilen anklickbar machen (Toggle der Hervorhebung)
+    (function(){
+      const table = document.getElementById('myTable');
+      const tbody = table.querySelector('tbody');
+
+      // Delegation: auf Klick in tbody reagieren
+      tbody.addEventListener('click', function(e){
+        // Finde die tr-Element (falls auf td oder Inhalt geklickt wurde)
+        let tr = e.target;
+        while (tr && tr.nodeName !== 'TR') tr = tr.parentElement;
+        if (!tr) return;
+
+        // Entferne Auswahl bei anderen Zeilen (optional: mehrere zulassen)
+        Array.from(tbody.querySelectorAll('tr')).forEach(r => r.classList.remove('selected'));
+
+        // Toggle die Auswahl für diese Zeile
+        tr.classList.toggle('selected');
+
+        // Optional: zeige die Zellenwerte in der Konsole
+        const cells = Array.from(tr.querySelectorAll('td')).map(td => td.textContent.trim());
+        console.log('Ausgewählte Zeile:', cells);
+      });
+
+      // Tastaturunterstützung: Enter drückt auf die aktuell fokussierte Zeile
+      tbody.addEventListener('keydown', function(e){
+        if (e.key === 'Enter'){
+          let tr = e.target;
+          while (tr && tr.nodeName !== 'TR') tr = tr.parentElement;
+          if (tr) tr.click();
+        }
+      });
+
+      // Setze tabindex damit Zeilen per Tab erreichbar sind
+      Array.from(tbody.querySelectorAll('tr')).forEach(tr => tr.setAttribute('tabindex','0'));
+    })();
+  </script>
+</body>
+</html>

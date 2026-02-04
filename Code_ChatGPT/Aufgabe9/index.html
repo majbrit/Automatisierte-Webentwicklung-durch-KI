@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pink & Grün — Optische Täuschungen</title>
+  <style>
+    :root{
+      --pink:#ff4da6; /* kräftiges Pink */
+      --pink-soft:#ffd6ec;
+      --green:#26d86a; /* kräftiges Grün */
+      --green-soft:#d8ffea;
+      --bg:#0f0f12;
+      --glass: rgba(255,255,255,0.04);
+      --card-radius:16px;
+      color: #f3f3f5;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#060607 120%);}
+    .wrap{max-width:1100px;margin:28px auto;padding:20px;}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+    h1{font-size:1.4rem;margin:0}
+    p.lead{margin:0;color:#bfc3c8;font-size:0.95rem}
+
+    .controls{display:flex;gap:10px;align-items:center}
+    .btn{background:var(--glass);border:1px solid rgba(255,255,255,0.06);padding:8px 12px;border-radius:10px;color:inherit;cursor:pointer}
+    .btn:active{transform:translateY(1px)}
+
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:14px;border-radius:var(--card-radius);box-shadow:0 6px 30px rgba(0,0,0,0.6);min-height:260px;display:flex;flex-direction:column}
+    .card h2{font-size:1rem;margin:0 0 8px 0}
+    .preview{flex:1;border-radius:10px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;background:#060607}
+    .caption{font-size:12px;color:#aeb3b8;margin-top:10px}
+
+    /* 1: Rotierender Spiral (bewegte Täuschung) */
+    .spiral svg{width:220px;height:220px;display:block}
+
+    /* 2: Café Wall / Checker offset */
+    .cafelike{display:grid;grid-template-columns:repeat(10,1fr);grid-auto-rows:28px;width:100%;height:100%}
+    .cafelike div{box-shadow:inset 0 0 0 1px rgba(0,0,0,0.25)}
+
+    /* 3: Simultane Kontrast — gleiche Mitte erscheint verschieden */
+    .contrast{display:flex;gap:22px;align-items:center;justify-content:center}
+    .swatch{width:110px;height:110px;border-radius:8px;display:flex;align-items:center;justify-content:center;position:relative}
+    .inner{width:56px;height:56px;border-radius:6px;box-shadow:0 6px 18px rgba(0,0,0,0.45)}
+    .label{position:absolute;bottom:8px;font-size:11px;color:#d0d4d8}
+
+    /* 4: Müller-Lyer */
+    .muller{display:flex;flex-direction:column;gap:12px;align-items:center}
+    .arrow{display:flex;align-items:center;gap:18px}
+
+    /* 5: Hermann Gitter */
+    .hermann{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+    .hermann .gridlines{width:90%;height:90%;background-image:linear-gradient(0deg, rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);background-size:40px 40px;filter:blur(0.3px)}
+
+    footer{margin-top:18px;color:#9aa0a6;font-size:13px;text-align:center}
+
+    /* responsive */
+    @media (max-width:900px){.grid{grid-template-columns:1fr}.wrap{padding:12px}}
+
+    /* utilities for modes */
+    .mode-pink{--a:var(--pink);--a-soft:var(--pink-soft)}
+    .mode-green{--a:var(--green);--a-soft:var(--green-soft)}
+
+    /* small polished touches */
+    .title-badge{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;background:linear-gradient(90deg,var(--a) 0%, var(--a-soft) 120%);color:#081010;box-shadow:0 4px 18px rgba(0,0,0,0.45)}
+  </style>
+</head>
+<body class="mode-pink">
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Pink &amp; Grün — Optische Täuschungen <span class="title-badge">Interaktiv</span></h1>
+        <p class="lead">Mehrere klassische Täuschungen, gestylt in Pink und Grün. Nutze die Bedienelemente, um Animationen zu steuern.</p>
+      </div>
+
+      <div class="controls">
+        <button class="btn" id="toggleColor">Wechsel zu Grün</button>
+        <button class="btn" id="playPause">Pause</button>
+        <label for="speed">Geschw.: </label>
+        <input id="speed" type="range" min="0.2" max="3" step="0.1" value="1">
+      </div>
+    </header>
+
+    <main class="grid">
+      <!-- Spiral -->
+      <section class="card spiral">
+        <h2>Rotierende Spirale</h2>
+        <div class="preview" id="spiralPreview">
+          <!-- SVG Spiral built with strokes -->
+          <svg viewBox="-120 -120 240 240" id="spiralSVG" aria-label="rotierende spirale" role="img">
+            <defs>
+              <linearGradient id="g1" x1="0" x2="1">
+                <stop offset="0" stop-color="var(--a)" />
+                <stop offset="1" stop-color="white" stop-opacity="0.0" />
+              </linearGradient>
+            </defs>
+            <g id="spiralGroup">
+              <!-- will be filled by JS -->
+            </g>
+          </svg>
+        </div>
+        <div class="caption">Eine sich drehende Spirale erzeugt Bewegungstäuschungen im Blickfeld.</div>
+      </section>
+
+      <!-- Cafe Wall -->
+      <section class="card">
+        <h2>Café Wall / Geschobene Kacheln</h2>
+        <div class="preview cafelike" id="cafePreview" aria-hidden="false"></div>
+        <div class="caption">Gleiche Linien erscheinen schief durch versetzte Reihen.</div>
+      </section>
+
+      <!-- Simultane Kontrast -->
+      <section class="card">
+        <h2>Simultaner Kontrast</h2>
+        <div class="preview contrast">
+          <div class="swatch" style="background:var(--a);">
+            <div class="inner" id="innerLeft"></div>
+            <div class="label">Umgebung: <strong>stark</strong></div>
+          </div>
+          <div class="swatch" style="background:var(--a-soft);">
+            <div class="inner" id="innerRight"></div>
+            <div class="label">Umgebung: <strong>hell</strong></div>
+          </div>
+        </div>
+        <div class="caption">Die mittleren Quadrate sind identisch — aber wirken unterschiedlich.</div>
+      </section>
+
+      <!-- Muller-Lyer -->
+      <section class="card">
+        <h2>Müller-Lyer</h2>
+        <div class="preview muller">
+          <div class="arrow" aria-hidden="false">
+            <svg width="320" height="70" viewBox="0 0 320 70" role="img" aria-label="muller-lyer">
+              <g transform="translate(10,20)">
+                <line x1="10" y1="15" x2="150" y2="15" stroke="var(--a)" stroke-width="6" stroke-linecap="round"></line>
+                <polyline points="0,0 10,15 0,30" fill="none" stroke="var(--a)" stroke-width="6" stroke-linecap="round"></polyline>
+                <polyline points="160,0 150,15 160,30" fill="none" stroke="var(--a)" stroke-width="6" stroke-linecap="round"></polyline>
+              </g>
+              <g transform="translate(10,40)">
+                <line x1="10" y1="15" x2="200" y2="15" stroke="var(--a)" stroke-width="6" stroke-linecap="round"></line>
+                <polyline points="0,0 10,15 0,30" fill="none" stroke="var(--a)" stroke-width="6" stroke-linecap="round"></polyline>
+                <polyline points="210,0 200,15 210,30" fill="none" stroke="var(--a)" stroke-width="6" stroke-linecap="round"></polyline>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div class="caption">Pfeilenden verändern unsere Wahrnehmung von Linienlänge.</div>
+      </section>
+
+      <!-- Hermann Grid -->
+      <section class="card">
+        <h2>Hermann-Gitter</h2>
+        <div class="preview hermann">
+          <div class="gridlines" aria-hidden="false"></div>
+        </div>
+        <div class="caption">Bei weitem nicht alle Punkte sind gleich hell — Überraschung am Kreuzungs-Punkt.</div>
+      </section>
+
+    </main>
+
+    <footer>Tipps: Schau aus dem Augenwinkel auf eine Spirale oder bewege den Mauszeiger über die Cafémauer für zusätzliche Effekte.</footer>
+  </div>
+
+  <script>
+    // --- Basis-Einstellungen ---
+    const body = document.body;
+    const toggleBtn = document.getElementById('toggleColor');
+    const playPauseBtn = document.getElementById('playPause');
+    const speedRange = document.getElementById('speed');
+
+    // state
+    let isPink = true;
+    let running = true;
+    let speed = 1;
+
+    toggleBtn.addEventListener('click', ()=>{
+      isPink = !isPink;
+      body.className = isPink ? 'mode-pink' : 'mode-green';
+      toggleBtn.textContent = isPink ? 'Wechsel zu Grün' : 'Wechsel zu Pink';
+    });
+
+    playPauseBtn.addEventListener('click', ()=>{
+      running = !running;
+      playPauseBtn.textContent = running ? 'Pause' : 'Play';
+      setAnimationsState();
+    });
+
+    speedRange.addEventListener('input', (e)=>{ speed = parseFloat(e.target.value); applySpeed(); });
+
+    function setAnimationsState(){
+      const svg = document.getElementById('spiralGroup');
+      svg.style.animationPlayState = running ? 'running' : 'paused';
+      // CSS animation on group
+    }
+
+    function applySpeed(){
+      document.documentElement.style.setProperty('--speed', speed);
+      const sg = document.getElementById('spiralGroup');
+      if(sg) sg.style.animationDuration = (6 / speed) + 's';
+    }
+
+    // --- Spiral erstellen ---
+    const spiralGroup = document.getElementById('spiralGroup');
+    function buildSpiral(){
+      spiralGroup.innerHTML = '';
+      const turns = 8;
+      const points = 800;
+      for(let t=0;t<turns;t++){
+        const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+        let d='';
+        for(let i=0;i<points;i++){
+          const a = (i/points) * Math.PI * 2 * (t+1) * (0.75);
+          const r = 6 + (i/points) * 100;
+          const x = Math.cos(a) * r;
+          const y = Math.sin(a) * r;
+          d += (i===0? 'M':'L') + x.toFixed(2) + ' ' + y.toFixed(2) + ' ';
+        }
+        path.setAttribute('d',d);
+        path.setAttribute('fill','none');
+        path.setAttribute('stroke','var(--a)');
+        path.setAttribute('stroke-width', 2 - (t*0.18));
+        path.setAttribute('stroke-linecap','round');
+        path.setAttribute('opacity', 0.75 - t*0.08);
+        spiralGroup.appendChild(path);
+      }
+      // add animation via CSS on the group element
+      spiralGroup.style.transformOrigin='50% 50%';
+      spiralGroup.style.animation = 'spin 6s linear infinite';
+      applySpeed();
+    }
+
+    // keyframes creation
+    const style = document.createElement('style');
+    style.textContent = `@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}`;
+    document.head.appendChild(style);
+
+    // --- Cafe wall (checker offset) ---
+    const cafePreview = document.getElementById('cafePreview');
+    function buildCafe(){
+      cafePreview.innerHTML='';
+      const rows = 12;
+      const cols = 10;
+      for(let r=0;r<rows;r++){
+        const offset = (r%2===0) ? 0 : 20;
+        for(let c=0;c<cols;c++){
+          const cell = document.createElement('div');
+          cell.style.gridColumn = (c+1)+'/'+(c+2);
+          cell.style.gridRow = (r+1)+'/'+(r+2);
+          const isDark = ((c + (r%2))%2===0);
+          cell.style.background = isDark ? 'linear-gradient(180deg, var(--a), rgba(0,0,0,0.15))' : 'linear-gradient(180deg, var(--a-soft), rgba(255,255,255,0.02))';
+          // shift alternating rows visually
+          cell.style.transform = `translateX(${offset}px)`;
+          cafePreview.appendChild(cell);
+        }
+      }
+
+      // subtle parallax when moving mouse
+      cafePreview.addEventListener('mousemove', (e)=>{
+        const rect = cafePreview.getBoundingClientRect();
+        const mx = (e.clientX - rect.left) / rect.width - 0.5;
+        const my = (e.clientY - rect.top) / rect.height - 0.5;
+        cafePreview.style.transform = `perspective(600px) rotateX(${my*6}deg) rotateY(${mx*8}deg)`;
+      });
+      cafePreview.addEventListener('mouseleave', ()=>{cafePreview.style.transform='none'});
+    }
+
+    // --- Simultaner Kontrast: gleiche Farbe in der Mitte ---
+    const innerLeft = document.getElementById('innerLeft');
+    const innerRight = document.getElementById('innerRight');
+    function setContrastSquares(){
+      // both identical center colors (contrasting background makes them look different)
+      innerLeft.style.background = 'rgba(255,255,255,0.9)';
+      innerRight.style.background = 'rgba(255,255,255,0.9)';
+      // depending on mode, adjust shadow tint to enhance illusion
+      innerLeft.style.boxShadow = `0 8px 22px rgba(0,0,0,0.45), 0 0 0 6px var(--a)`;
+      innerRight.style.boxShadow = `0 8px 22px rgba(0,0,0,0.45), 0 0 0 6px var(--a-soft)`;
+    }
+
+    // --- init Hermann grid (no extra JS required) ---
+
+    // --- apply theme-sensitive attributes on mode change ---
+    const observer = new MutationObserver(()=>{ setContrastSquares(); });
+    observer.observe(body, {attributes:true});
+
+    // --- apply initial builds ---
+    buildSpiral(); buildCafe(); setContrastSquares();
+
+    // expose a gentle animation loop for subtle pulse
+    let t=0;
+    function loop(){
+      t+=0.01 * speed;
+      // pulsate gridlines opacity to enhance perceived flicker
+      const gl = document.querySelector('.gridlines');
+      if(gl) gl.style.opacity = (0.85 + Math.sin(t*1.3)*0.06).toFixed(2);
+      requestAnimationFrame(loop);
+    }
+    loop();
+
+    // ensure animations respect play/pause
+    function applySpeed(){
+      const dur = (6 / Math.max(0.2,speed));
+      spiralGroup.style.animationDuration = dur + 's';
+    }
+    applySpeed();
+
+    // Accessibility: keyboard shortcuts
+    window.addEventListener('keydown', (e)=>{
+      if(e.key === ' '){ e.preventDefault(); playPauseBtn.click(); }
+      if(e.key.toLowerCase() === 'c'){ toggleBtn.click(); }
+      if(e.key === 'ArrowUp'){ speedRange.value = Math.min(3, parseFloat(speedRange.value)+0.1); speedRange.dispatchEvent(new Event('input')); }
+      if(e.key === 'ArrowDown'){ speedRange.value = Math.max(0.2, parseFloat(speedRange.value)-0.1); speedRange.dispatchEvent(new Event('input')); }
+    });
+
+    // small hint: clickable areas
+    document.querySelectorAll('.preview').forEach(p=>{
+      p.addEventListener('click', ()=>{ p.classList.toggle('accent'); });
+    });
+  </script>
+</body>
+</html>

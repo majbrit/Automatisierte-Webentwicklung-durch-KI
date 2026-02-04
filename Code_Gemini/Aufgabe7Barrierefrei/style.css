@@ -1,0 +1,80 @@
+body {
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+}
+
+.slider-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem; /* Abstand zwischen Label, Slider und Output */
+    padding: 1.5rem 2rem;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+label {
+    font-weight: 600;
+}
+
+/* Visuelle Anzeige des Werts */
+#volume-output {
+    font-weight: 500;
+    font-variant-numeric: tabular-nums; /* Sorgt für gleichbleibende Zahlenbreite */
+    min-width: 45px; /* Verhindert "Springen" bei Wertänderung */
+    text-align: right;
+}
+
+/* Styling des Sliders */
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 200px;
+    height: 8px;
+    background: #ddd;
+    border-radius: 5px;
+    outline: none; /* Standard-Fokusring entfernen (ersetzen wir unten) */
+    cursor: pointer;
+}
+
+/* Styling des "Griffs" (Thumb) - WebKit/Blink (Chrome, Safari) */
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #007aff;
+    border-radius: 50%;
+    border: none;
+    transition: background 0.2s ease;
+}
+
+/* Styling des "Griffs" (Thumb) - Firefox */
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #007aff;
+    border-radius: 50%;
+    border: none;
+    transition: background 0.2s ease;
+}
+
+/* ** WICHTIG: Barrierefreier Fokus-Stil **
+Wir heben den Griff hervor, nicht den ganzen Regler,
+da der Griff das Element ist, das man bewegt.
+*/
+
+/* Fokus-Stil für WebKit/Blink */
+input[type="range"]:focus::-webkit-slider-thumb {
+    /* Ein "doppelter" Schatten erzeugt einen klaren Ring */
+    box-shadow: 0 0 0 3px #ffffff, 0 0 0 6px #007aff;
+}
+
+/* Fokus-Stil für Firefox */
+input[type="range"]:focus::-moz-range-thumb {
+    box-shadow: 0 0 0 3px #ffffff, 0 0 0 6px #007aff;
+}

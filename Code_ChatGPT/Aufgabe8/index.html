@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Springseil-Spaß 🎉</title>
+  <style>
+    :root{
+      --bg:#FFFBF2;
+      --card:#fff;
+      --accent1:#FF6B6B;
+      --accent2:#FFD93D;
+      --accent3:#6BCB77;
+      --accent4:#4D96FF;
+      --shadow: 0 8px 20px rgba(13,13,27,0.12);
+      --glass: rgba(255,255,255,0.6);
+      --glass-2: rgba(255,255,255,0.85);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg,var(--bg),#FFEFEF 60%);
+      color:#222;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding:24px;
+      display:flex;
+      justify-content:center;
+      align-items:flex-start;
+    }
+
+    .wrap{
+      width:100%;
+      max-width:1100px;
+      display:grid;
+      grid-template-columns: 420px 1fr;
+      gap:22px;
+      align-items:start;
+    }
+
+    header.brand{
+      grid-column:1 / -1;
+      display:flex;
+      align-items:center;
+      gap:18px;
+      margin-bottom:6px;
+    }
+    .logo{
+      width:72px;height:72px;border-radius:18px;background:linear-gradient(135deg,var(--accent4),var(--accent3));
+      display:flex;align-items:center;justify-content:center;color:white;font-size:34px;font-weight:700;box-shadow:var(--shadow);
+    }
+    h1{font-size:26px;margin:0}
+    p.lead{margin:0;color:#444}
+
+    /* left panel */
+    .card{
+      background:linear-gradient(180deg,var(--glass),var(--glass-2));
+      border-radius:16px;padding:18px;box-shadow:var(--shadow);
+      backdrop-filter: blur(6px);
+    }
+    .left{padding:18px}
+
+    .player{
+      display:flex;flex-direction:column;gap:12px;align-items:stretch
+    }
+
+    .controls{display:flex;gap:10px;flex-wrap:wrap}
+    button.btn{
+      background:linear-gradient(180deg,#fff, #f6f6f6);
+      border:0;padding:10px 12px;border-radius:12px;font-weight:600;cursor:pointer;box-shadow:0 6px 12px rgba(0,0,0,0.06);
+    }
+    button.btn.primary{background:linear-gradient(135deg,var(--accent1),var(--accent4));color:white}
+    button.btn.ghost{background:transparent;border:2px dashed rgba(0,0,0,0.06)}
+
+    .big-counter{font-size:48px;font-weight:800;color:var(--accent4);text-align:center;padding:6px 0}
+
+    /* right panel */
+    .arena{position:relative;height:520px;border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#E6F4FF,#FFF7EC);display:flex;align-items:center;justify-content:center}
+
+    /* playful ground */
+    .ground{position:absolute;left:0;right:0;bottom:0;height:160px;background:linear-gradient(180deg,#E0FFEB,#C6F3D9);border-top-left-radius:40px;border-top-right-radius:40px;display:flex;align-items:center;justify-content:center}
+    .shadow{position:absolute;border-radius:50%;width:140px;height:40px;background:rgba(0,0,0,0.08);bottom:160px;left:calc(50% - 70px);transition:all 180ms ease}
+
+    /* character */
+    .character{
+      width:120px;height:210px;position:relative;z-index:10;display:flex;align-items:end;flex-direction:column;gap:6px;pointer-events:none
+    }
+    .head{width:78px;height:78px;border-radius:50%;background:linear-gradient(135deg,#FFF1F0,#FFDCDC);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:34px;box-shadow:0 8px 18px rgba(0,0,0,0.08)}
+    .body{width:94px;height:110px;border-radius:20px;background:linear-gradient(180deg,var(--accent2),#FFF);display:flex;align-items:center;justify-content:center;font-weight:700}
+
+    /* rope */
+    .rope-wrap{position:absolute;left:50%;transform:translateX(-50%);top:110px;pointer-events:none;width:560px;height:260px}
+    svg.rope{width:100%;height:100%;overflow:visible}
+
+    /* small UI */
+    .panel{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+
+    .challenge{background:linear-gradient(135deg,var(--accent3),var(--accent4));color:white;padding:10px 12px;border-radius:12px;font-weight:700}
+
+    footer.tips{grid-column:1 / -1;margin-top:10px;padding:12px;border-radius:12px;background:linear-gradient(90deg,#fff, #FFFDF1);box-shadow:var(--shadow)}
+
+    /* responsive */
+    @media (max-width:980px){
+      .wrap{grid-template-columns:1fr;}
+      .arena{height:420px}
+    }
+
+    /* confetti canvas */
+    canvas#confetti{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}
+
+    /* small accessibility */
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="brand">
+      <div class="logo">SS</div>
+      <div>
+        <h1>Springseil-Spaß 🎉</h1>
+        <p class="lead">Bewege dich, zähle deine Sprünge und meistere lustige Herausforderungen!</p>
+      </div>
+    </header>
+
+    <div class="card left">
+      <div class="player">
+        <div class="panel">
+          <div class="challenge" id="challengeTag">Challenge: Halte 20 Sprünge!</div>
+          <div style="flex:1"></div>
+          <div aria-live="polite">🎵 <label><input type="checkbox" id="musicToggle"> Musik</label></div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:12px;margin-top:8px">
+          <div style="flex:1">
+            <div style="font-size:12px;color:#666">Sprünge</div>
+            <div class="big-counter" id="counter">0</div>
+          </div>
+          <div style="width:120px">
+            <div style="font-size:12px;color:#666">Zeit</div>
+            <div class="big-counter" id="timer">00:00</div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button class="btn primary" id="startBtn" aria-pressed="false">Start</button>
+          <button class="btn" id="jumpBtn">Sprung (+1)</button>
+          <button class="btn ghost" id="resetBtn">Zurücksetzen</button>
+          <button class="btn" id="trickBtn">Neue Herausforderung</button>
+        </div>
+
+        <div style="font-size:13px;color:#444;padding-top:8px">
+          Tippe auf <strong>Sprung</strong>, drücke die Leertaste oder klicke auf das springende Seil rechts, um zu zählen. Viel Spaß! 🐥
+        </div>
+      </div>
+
+      <div style="margin-top:12px">
+        <details>
+          <summary style="font-weight:700">Spielanleitung</summary>
+          <ul>
+            <li>Drücke <strong>Start</strong>, um die Runde zu beginnen.</li>
+            <li>Zähle Sprünge mit dem Knopf oder der Leertaste.</li>
+            <li>Erfülle Herausforderungen, z. B. "20 Sprünge" oder "10 Sprünge ohne Pause".</li>
+            <li>Hast du dein Ziel erreicht? Belohne dich mit einer Tanzeinlage!</li>
+          </ul>
+        </details>
+      </div>
+    </div>
+
+    <div class="card arena" id="arena">
+      <canvas id="confetti" width="1200" height="800" aria-hidden="true"></canvas>
+      <div class="rope-wrap" id="ropeWrap" tabindex="0" role="button" aria-label="Seil klicken oder tippen zum Springen">
+        <svg class="rope" viewBox="0 0 560 260" preserveAspectRatio="xMidYMid meet">
+          <path id="ropePath" d="M20 200 C 140 80, 420 80, 540 200" stroke="#F28AB2" stroke-width="8" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="character" id="character">
+        <div class="head" id="head">🙂</div>
+        <div class="body" id="body">Spring!</div>
+      </div>
+      <div class="shadow" id="shadow"></div>
+      <div class="ground"></div>
+    </div>
+
+    <footer class="tips card">
+      <strong>Gesund & Sicher:</strong> Warm-up vor dem Springen, trage passende Schuhe und trinke Wasser. Wenn etwas weh tut, mach eine Pause.
+    </footer>
+  </div>
+
+  <div class="sr-only" id="ariaStatus" aria-live="polite">Bereit</div>
+
+  <script>
+    // DOM
+    const startBtn = document.getElementById('startBtn');
+    const jumpBtn = document.getElementById('jumpBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const trickBtn = document.getElementById('trickBtn');
+    const counterEl = document.getElementById('counter');
+    const timerEl = document.getElementById('timer');
+    const challengeTag = document.getElementById('challengeTag');
+    const ropeWrap = document.getElementById('ropeWrap');
+    const arena = document.getElementById('arena');
+    const confettiCanvas = document.getElementById('confetti');
+    const musicToggle = document.getElementById('musicToggle');
+    const ariaStatus = document.getElementById('ariaStatus');
+
+    // state
+    let running = false;
+    let jumps = 0;
+    let startTime = null;
+    let timerInterval = null;
+    let target = 20;
+
+    // audio - simple beeps using WebAudio
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    const audioCtx = AudioCtx ? new AudioCtx() : null;
+    function beep(freq=880,dur=0.09,vol=0.06){
+      if(!audioCtx) return;
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = 'sine';o.frequency.value = freq;g.gain.value = vol;
+      o.connect(g);g.connect(audioCtx.destination);
+      o.start();
+      o.stop(audioCtx.currentTime + dur);
+    }
+
+    // music: simple loop using oscillators
+    let musicNode = null;
+    function startMusic(){
+      if(!audioCtx) return;
+      if(musicNode) return;
+      musicNode = audioCtx.createOscillator();
+      musicNode.type='sawtooth';musicNode.frequency.value=220;
+      const g = audioCtx.createGain();g.gain.value=0.02;
+      musicNode.connect(g);g.connect(audioCtx.destination);musicNode.start();
+    }
+    function stopMusic(){ if(musicNode){ musicNode.stop(); musicNode.disconnect(); musicNode=null; } }
+
+    // timer
+    function formatTime(ms){
+      const s = Math.floor(ms/1000);
+      const mm = String(Math.floor(s/60)).padStart(2,'0');
+      const ss = String(s%60).padStart(2,'0');
+      return mm+':'+ss;
+    }
+
+    function updateTimer(){
+      if(!running) return;
+      const now = Date.now();
+      timerEl.textContent = formatTime(now - startTime);
+    }
+
+    function startRound(){
+      if(!running){
+        running = true;startBtn.textContent='Stop';startBtn.setAttribute('aria-pressed','true');
+        startTime = Date.now();
+        timerInterval = setInterval(updateTimer,250);
+        ariaStatus.textContent = 'Runde gestartet. Viel Spaß!';
+        if(musicToggle.checked){ startMusic(); }
+      } else {
+        running = false;startBtn.textContent='Start';startBtn.setAttribute('aria-pressed','false');
+        clearInterval(timerInterval);timerInterval=null;
+        ariaStatus.textContent = 'Runde gestoppt.';
+        stopMusic();
+      }
+    }
+
+    function resetAll(){
+      running=false;startBtn.textContent='Start';startBtn.setAttribute('aria-pressed','false');
+      clearInterval(timerInterval);timerInterval=null;startTime=null;
+      jumps=0;counterEl.textContent='0';timerEl.textContent='00:00';ariaStatus.textContent='Zurückgesetzt.';
+      stopMusic();
+      stopConfetti();
+      updateCharacterJump(0);
+    }
+
+    function setTarget(n){ target = n; challengeTag.textContent = 'Challenge: ' + n + ' Sprünge!'; }
+
+    function newChallenge(){
+      // playful generator
+      const choices = [10,12,15,20,25,30];
+      const pick = choices[Math.floor(Math.random()*choices.length)];
+      setTarget(pick);
+      ariaStatus.textContent = 'Neue Herausforderung: ' + pick + ' Sprünge!';
+    }
+
+    function doJump(){
+      if(!running) return;
+      jumps++;
+      counterEl.textContent = String(jumps);
+      beep(1200,0.06,0.08);
+      smallBounce();
+      updateCharacterJump(jumps);
+      if(jumps === target){
+        // success
+        ariaStatus.textContent = 'Ziel erreicht! Super gemacht!';
+        startConfetti();
+        playVictoryJingle();
+      }
+    }
+
+    // character animation (simple)
+    const character = document.getElementById('character');
+    const shadow = document.getElementById('shadow');
+    function updateCharacterJump(count){
+      const up = Math.min(1, Math.sin(count*0.6)*0.6 + 0.4);
+      // local small jump animation
+      character.animate([
+        { transform: 'translateY(0px)' },
+        { transform: 'translateY(-28px)' },
+        { transform: 'translateY(0px)' }
+      ],{ duration:250, easing:'ease-out'});
+      shadow.animate([{ transform: 'scale(1)' , opacity:0.12},{ transform: 'scale(0.7)', opacity:0.08},{ transform: 'scale(1)', opacity:0.12}],{duration:250});
+    }
+
+    // rope click -> triggers jump too (with little arc animation)
+    const ropePath = document.getElementById('ropePath');
+    function ropeSwing(){
+      ropePath.animate([{ d: 'M20 200 C 140 80, 420 80, 540 200' },{ d: 'M20 200 C 140 80, 420 120, 540 200' },{ d: 'M20 200 C 140 80, 420 80, 540 200' }],{duration:450,easing:'ease-in-out'});
+      doJump();
+    }
+
+    // keyboard support
+    window.addEventListener('keydown', (e)=>{
+      if(e.code === 'Space'){
+        e.preventDefault();
+        doJump();
+      }
+    });
+
+    // DOM events
+    startBtn.addEventListener('click', startRound);
+    jumpBtn.addEventListener('click', ()=>{ doJump(); });
+    resetBtn.addEventListener('click', resetAll);
+    trickBtn.addEventListener('click', newChallenge);
+    ropeWrap.addEventListener('click', ropeSwing);
+
+    musicToggle.addEventListener('change', ()=>{
+      if(musicToggle.checked){ startMusic(); } else { stopMusic(); }
+    });
+
+    // small bounce visual when pressing jump
+    function smallBounce(){
+      const head = document.getElementById('head');
+      head.animate([{ transform:'translateY(0px)' },{ transform:'translateY(-8px)' },{ transform:'translateY(0px)'}],{duration:220,easing:'cubic-bezier(.2,.9,.3,1)'});
+    }
+
+    // victory jingle
+    function playVictoryJingle(){
+      if(!audioCtx) return;
+      const now = audioCtx.currentTime;
+      const notes = [880, 988, 1047, 1320];
+      notes.forEach((n,i)=>{
+        const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+        o.frequency.value = n; o.type='triangle'; g.gain.value=0.05;
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start(now + i*0.12); o.stop(now + i*0.12 + 0.12);
+      });
+    }
+
+    // simple confetti implementation
+    const confettiCtx = confettiCanvas.getContext('2d');
+    let confettiPieces = [];
+    let confettiTicker = null;
+    function startConfetti(){
+      confettiCanvas.width = arena.clientWidth*2; confettiCanvas.height = arena.clientHeight*2;
+      confettiCanvas.style.width = arena.clientWidth+'px'; confettiCanvas.style.height = arena.clientHeight+'px';
+      confettiPieces = [];
+      for(let i=0;i<70;i++){
+        confettiPieces.push({ x: Math.random()*confettiCanvas.width, y: Math.random()*-confettiCanvas.height, w:6+Math.random()*8, h:8+Math.random()*10, rot:Math.random()*360, speed:2+Math.random()*4, color: randomColor() });
+      }
+      if(confettiTicker) cancelAnimationFrame(confettiTicker);
+      (function frame(){
+        confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+        confettiPieces.forEach(p=>{
+          p.y += p.speed; p.rot += 6;
+          confettiCtx.save();
+          confettiCtx.translate(p.x,p.y); confettiCtx.rotate(p.rot*Math.PI/180);
+          confettiCtx.fillStyle = p.color; confettiCtx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+          confettiCtx.restore();
+        });
+        confettiPieces = confettiPieces.filter(p => p.y < confettiCanvas.height + 20);
+        if(confettiPieces.length > 0){ confettiTicker = requestAnimationFrame(frame); }
+      })();
+      setTimeout(stopConfetti,4000);
+    }
+    function stopConfetti(){ if(confettiTicker) cancelAnimationFrame(confettiTicker); confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height); }
+    function randomColor(){ const arr = ['#FF6B6B','#FFD93D','#6BCB77','#4D96FF','#7C4DFF','#FF8AB8']; return arr[Math.floor(Math.random()*arr.length)]; }
+
+    // set a gentle welcome animation and initial challenge
+    (function init(){
+      newChallenge();
+      document.getElementById('head').animate([{ transform:'translateY(6px)'},{ transform:'translateY(0px)'}],{duration:1000,iterations:Infinity,direction:'alternate',easing:'ease-in-out'});
+      // small responsive shadow adjust
+      window.addEventListener('resize', ()=>{ confettiCanvas.width = arena.clientWidth*2; confettiCanvas.height = arena.clientHeight*2 });
+    })();
+
+    // Accessibility note: ensure audio context starts on interaction on some browsers
+    ['click','keydown','touchstart'].forEach(evt=>window.addEventListener(evt, ()=>{ if(audioCtx && audioCtx.state === 'suspended'){ audioCtx.resume(); } },{once:true}));
+
+  </script>
+</body>
+</html>

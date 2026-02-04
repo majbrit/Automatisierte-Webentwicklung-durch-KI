@@ -1,0 +1,94 @@
+/* Globale Stile */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #F0F8FF; /* Ein helles Himmelblau als Hintergrund */
+    color: #333;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Wir verwenden die fröhliche Schriftart für Überschriften */
+h1, h2, h3 {
+    font-family: 'Fredoka One', cursive;
+}
+
+/* Der Hauptcontainer für unsere Inhalte */
+.container {
+    max-width: 800px;
+    background-color: #ffffff; /* Weißer Hintergrund für den Inhalt */
+    border-radius: 20px; /* Schön abgerundete Ecken */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    text-align: center;
+}
+
+header h1 {
+    color: #FF6347; /* Ein helles Tomatenrot */
+    font-size: 3em;
+    margin-top: 0;
+}
+
+/* Stil für das Bild */
+img {
+    max-width: 100%;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+/* Der interaktive Zähler-Bereich */
+.counter-section {
+    background-color: #FFFACD; /* Ein sanftes Zitronengelb */
+    padding: 20px;
+    border-radius: 15px;
+    margin-top: 20px;
+}
+
+#jump-counter {
+    font-size: 4em; /* Riesige Zahl! */
+    font-weight: bold;
+    color: #4682B4; /* Ein kräftiges Blau */
+    margin: 10px 0;
+    padding: 10px;
+}
+
+#jump-button {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.5em;
+    padding: 12px 25px;
+    background-color: #32CD32; /* Ein leuchtendes Limettengrün */
+    color: white;
+    border: none;
+    border-radius: 30px; /* Ein runder Knopf */
+    cursor: pointer;
+    transition: transform 0.1s ease; /* Fügt einen kleinen Effekt hinzu */
+}
+
+/* Wenn man den Knopf drückt, wird er kleiner */
+#jump-button:active {
+    transform: scale(0.95);
+}
+
+/* Die Tipps-Liste */
+.tips ul {
+    list-style-type: '🤸 '; /* Ein Emoji als Listenpunkt! */
+    text-align: left;
+    display: inline-block; /* Zentriert die linksbündige Liste */
+    margin-top: 10px;
+}
+
+.tips ul li {
+    padding-left: 10px;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+/* Der kleine Footer */
+footer {
+    margin-top: 30px;
+    font-style: italic;
+    color: #777;
+}

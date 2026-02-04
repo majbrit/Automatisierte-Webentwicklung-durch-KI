@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pink & Grüne Täuschungen</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Optische Täuschungen in Pink & Grün</h1>
+
+        <section class="illusion-section">
+            <h2>Periphere Drift-Täuschung</h2>
+            <div class="illusion-container">
+                <div id="peripheral-drift"></div>
+            </div>
+            <p>Starre auf nur **einen** der kleinen schwarzen Punkte. Die Muster in deinem peripheren Sichtfeld (Augenwinkel) scheinen sich zu bewegen oder zu "fließen", obwohl das Bild komplett statisch ist.</p>
+        </section>
+
+        <section class="illusion-section">
+            <h2>Munker-White-Täuschung</h2>
+            <div class="illusion-container munker-container">
+                <div class="munker-box">
+                    <div class="munker-stripes pink"></div>
+                </div>
+                <div class="munker-box">
+                    <div class="munker-stripes white"></div>
+                </div>
+            </div>
+            <p>Schau dir die grünen Balken an. Der grüne Balken, der von **pinken** Linien durchzogen wird, wirkt möglicherweise dunkler oder anders getönt als der grüne Balken, der von **weißen** Linien durchzogen wird. **Es ist exakt dieselbe grüne Farbe!**</svg>
+            </p>
+        </section>
+
+        <section class="illusion-section">
+            <h2>Negatives Nachbild</h2>
+            <div class="illusion-container">
+                <div id="afterimage-box">
+                    <p>Klicke auf "Start", um die Illusion zu beginnen.</p>
+                </div>
+            </div>
+            <p id="afterimage-text">Starre für 10 Sekunden auf den Punkt in der Mitte der grünen Form, nachdem du auf "Start" geklickt hast. Wenn das Bild weiß wird, solltest du ein Nachbild in der Komplementärfarbe (Pink/Magenta) sehen.</p>
+            <button id="stare-button">Start</button>
+        </section>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

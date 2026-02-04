@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Barrierefreie Zwei-Spalten-Seite</title>
+  <meta name="description" content="Beispielseite mit Header, Footer und zwei Spalten - barrierefrei umgesetzt" />
+  <style>
+    /* Grundlegendes Reset */
+    *,*::before,*::after{box-sizing:border-box}
+    html{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.4;font-size:18px}
+    body{margin:0;color:#111;background:#fff}
+
+    /* Skip link - nur sichtbar wenn fokussiert */
+    .skip-link{position:absolute;left:0;top:-40px;background:#004085;color:white;padding:.5rem 1rem;z-index:1000;border-radius:0 0 4px 4px}
+    .skip-link:focus{top:8px}
+
+    /* Layout */
+    .site{min-height:100vh;display:flex;flex-direction:column}
+    header{background:#0b5; /* dezenter grünton */ padding:1rem;border-bottom:4px solid rgba(0,0,0,.08)}
+    header .inner, main .inner, footer .inner{max-width:1100px;margin:0 auto;padding:0 1rem}
+
+    .branding{display:flex;align-items:center;gap:.75rem}
+    .brand-logo{width:44px;height:44px;background:linear-gradient(135deg,#0a6,#06a);border-radius:6px;display:inline-block}
+    .site-title{font-size:1.125rem;font-weight:700}
+
+    nav ul{list-style:none;margin:0;padding:0;display:flex;gap:1rem}
+    nav a{color:#063;font-weight:600;text-decoration:none}
+    nav a:focus,nav a:hover{outline-offset:3px;text-decoration:underline}
+
+    /* Hauptbereich: zwei Spalten mit CSS Grid */
+    main{flex:1;padding:1.25rem 0}
+    .grid{display:grid;grid-template-columns:1fr 320px;gap:1.25rem;align-items:start}
+
+    /* Content card styles */
+    .card{background:linear-gradient(180deg,#fff,#fbfbfb);border:1px solid #e6e6e6;padding:1rem;border-radius:10px;box-shadow:0 1px 0 rgba(0,0,0,.02)}
+
+    article h1{font-size:1.5rem;margin-top:0}
+    .meta{font-size:.9rem;color:#555;margin-bottom:.75rem}
+
+    /* Footer */
+    footer{background:#f6f6f6;padding:1rem;border-top:1px solid #e0e0e0}
+    .footer-grid{display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;align-items:center}
+
+    /* Responsivität: auf schmalen Bildschirmen Spalten untereinander */
+    @media (max-width:880px){
+      .grid{grid-template-columns:1fr;}
+      nav ul{flex-wrap:wrap}
+      header,footer{padding-left:0;padding-right:0}
+    }
+
+    /* Fokus- und Kontrast-Styles für Barrierefreiheit */
+    :focus{outline:4px solid Highlight;outline-offset:2px}
+
+    /* Toggle für hohen Kontrast (wird per JS gesetzt) */
+    .high-contrast body, .high-contrast .card{background:#000;color:#fff}
+    .high-contrast nav a{color:#ffd700}
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#maincontent">Direkt zum Inhalt springen</a>
+  <div class="site" id="site">
+    <header role="banner" aria-label="Seitenkopf">
+      <div class="inner">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem">
+          <div class="branding" aria-hidden="false">
+            <span class="brand-logo" aria-hidden="true"></span>
+            <div>
+              <div class="site-title">Beispielseite — Barrierefrei</div>
+              <div style="font-size:.85rem;color:#334;margin-top:.125rem">Header mit Navigation</div>
+            </div>
+          </div>
+
+          <nav role="navigation" aria-label="Hauptnavigation">
+            <ul>
+              <li><a href="#home">Start</a></li>
+              <li><a href="#about">Über</a></li>
+              <li><a href="#kontakt">Kontakt</a></li>
+            </ul>
+          </nav>
+        </div>
+
+        <!-- Controls for accessibility testing -->
+        <div style="margin-top:.75rem;display:flex;gap:.5rem">
+          <button id="contrastToggle" aria-pressed="false">Hoher Kontrast</button>
+          <button id="swapColumns" aria-pressed="false">Spalten tauschen (Desktop)</button>
+        </div>
+      </div>
+    </header>
+
+    <main id="maincontent" role="main" aria-label="Hauptinhalt">
+      <div class="inner">
+        <div class="grid" id="layoutGrid">
+
+          <article class="card" id="primary" tabindex="-1" aria-labelledby="main-heading">
+            <h1 id="main-heading">Hauptinhalt</h1>
+            <p class="meta">Verfasst am <time datetime="2025-11-01">1. November 2025</time> — Dauer: 5 Min. Lesezeit</p>
+            <p>Dies ist der primäre Inhaltsbereich. Hier stehen Artikel, Formulare oder andere Inhalte, die für die Nutzerinnen und Nutzer zentral sind. Die Struktur nutzt semantische Elemente (<code>&lt;header&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;footer&gt;</code>, <code>&lt;article&gt;</code>, <code>&lt;aside&gt;</code>) und ist für Screenreader und Tastaturnutzer optimiert.</p>
+
+            <h2>Überschrift einer Sektion</h2>
+            <p>Beispieltext mit <a href="#">einem Link</a> und einer Aufzählung:</p>
+            <ul>
+              <li>Gut sichtbare Fokus-Stile</li>
+              <li>Logische Kopfzeilenhierarchie</li>
+              <li>Skip-Link zum schnellen Überspringen</li>
+            </ul>
+
+            <form aria-labelledby="contact-form-title">
+              <h3 id="contact-form-title">Kurzes Kontaktformular</h3>
+              <label for="name">Name</label><br>
+              <input id="name" name="name" type="text" required aria-required="true"><br>
+              <label for="email">E-Mail</label><br>
+              <input id="email" name="email" type="email"><br>
+              <label for="message">Nachricht</label><br>
+              <textarea id="message" name="message" rows="4"></textarea><br>
+              <button type="submit">Absenden</button>
+            </form>
+          </article>
+
+          <aside class="card" id="secondary" role="complementary" aria-labelledby="aside-heading">
+            <h2 id="aside-heading">Seitenleiste</h2>
+            <p>Zusätzliche Informationen, Links oder Hinweise. Die Seitenleiste ist als <code>aside</code> markiert und somit für assistive Technologien erkennbar.</p>
+
+            <nav aria-label="Seitliche Links">
+              <ul>
+                <li><a href="#help">Hilfe</a></li>
+                <li><a href="#faq">FAQ</a></li>
+                <li><a href="#impressum">Impressum</a></li>
+              </ul>
+            </nav>
+
+            <section aria-label="Kontaktinfo" style="margin-top:1rem">
+              <h3>Kontakt</h3>
+              <p><strong>Tel:</strong> <a href="tel:+491234567890">+49 123 456 7890</a></p>
+              <p><strong>E-Mail:</strong> <a href="mailto:info@example.org">info@example.org</a></p>
+            </section>
+
+          </aside>
+
+        </div>
+      </div>
+    </main>
+
+    <footer role="contentinfo" aria-label="Seiten-Footer">
+      <div class="inner">
+        <div class="footer-grid">
+          <div>© <span id="year"></span> Beispielseite</div>
+          <div>
+            <a href="#datenschutz">Datenschutz</a> · <a href="#agb">AGB</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Setze das Jahr im Footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Skip-link: manche Browser fokussieren den Zielanker nicht automatisch
+    document.querySelector('.skip-link').addEventListener('click', function(e){
+      const main = document.getElementById('maincontent');
+      // tabindex -1 erlaubt Fokusprogrammierung
+      main.setAttribute('tabindex','-1');
+      main.focus();
+    });
+
+    // Kontrast umschalten (Hilfsmittel zum Testen von Barrierefreiheit)
+    const contrastBtn = document.getElementById('contrastToggle');
+    contrastBtn.addEventListener('click', function(){
+      const pressed = this.getAttribute('aria-pressed') === 'true';
+      this.setAttribute('aria-pressed', String(!pressed));
+      document.documentElement.classList.toggle('high-contrast');
+    });
+
+    // Spalten tauschen (nur visuell auf Desktop); nützlich um zu prüfen wie Reihenfolge ausgelesen wird
+    const swapBtn = document.getElementById('swapColumns');
+    swapBtn.addEventListener('click', function(){
+      const grid = document.getElementById('layoutGrid');
+      const pressed = this.getAttribute('aria-pressed') === 'true';
+      this.setAttribute('aria-pressed', String(!pressed));
+      if(!pressed){
+        // Reihenfolge invertieren: aside zuerst, article danach
+        grid.style.gridTemplateAreas = '"aside primary"';
+        // For browsers that don't support grid-template-areas, swap by DOM order
+        grid.insertBefore(document.getElementById('secondary'), document.getElementById('primary'));
+      } else {
+        // Rückgängig: article zuerst
+        grid.insertBefore(document.getElementById('primary'), document.getElementById('secondary'));
+        grid.style.gridTemplateAreas = '';
+      }
+    });
+
+    // Einfaches Formular-Feedback (zugänglich, verhindert Seitenreload)
+    document.querySelector('form').addEventListener('submit', function(e){
+      e.preventDefault();
+      alert('Danke — Ihre Nachricht wurde (simuliert) gesendet.');
+    });
+  </script>
+</body>
+</html>

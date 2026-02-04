@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Roter Button — Barrierefrei</title>
+  <style>
+    :root{
+      --red:#b00020; /* guter Kontrast mit weiß */
+      --focus:#005fcc;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    body{
+      margin:0;
+      padding:2rem;
+      background:#fff;
+      color:#111;
+      line-height:1.4;
+    }
+
+    main{max-width:44rem;margin:0 auto}
+
+    h1{font-size:1.5rem;margin-bottom:0.5rem}
+    p.lead{margin-top:0;margin-bottom:1.25rem}
+
+    /* Stil für den roten Button */
+    .btn-red{
+      display:inline-block;
+      appearance:none;
+      -webkit-appearance:none;
+      border:0;
+      background:var(--red);
+      color:#fff;
+      padding:0.7rem 1.1rem;
+      font-size:1rem;
+      border-radius:8px;
+      cursor:pointer;
+      box-shadow:0 2px 0 rgba(0,0,0,0.08);
+    }
+
+    /* Deutlicher Fokus für Tastaturnutzer */
+    .btn-red:focus-visible{
+      outline:3px solid var(--focus);
+      outline-offset:3px;
+    }
+
+    /* Hover / active affordances */
+    .btn-red:hover{filter:brightness(.98)}
+    .btn-red:active{transform:translateY(1px)}
+
+    /* Hilfsklassen */
+    .sr-only{
+      position:absolute;
+      width:1px;height:1px;
+      padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0
+    }
+
+    /* Zusätzliche Hinweise sichtbar bei reduzierter Motion-Präferenz */
+    @media (prefers-reduced-motion: reduce){
+      .btn-red{transition:none}
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Barrierefreier roter Button</h1>
+    <p class="lead">Drücke den roten Button, um ein Alert-Fenster mit dem Text <strong>„Hallo Welt!“</strong> anzuzeigen. Der Button ist per Tastatur erreichbar und für Screenreader optimiert.</p>
+
+    <!-- Beschreibender Text, nur für Screenreader sichtbar -->
+    <p id="button-desc" class="sr-only">Drücke die Eingabetaste oder die Leertaste, um ein Dialogfenster mit dem Text "Hallo Welt!" anzuzeigen.</p>
+
+    <!-- Der eigentliche Button. type="button" um unbeabsichtigtes Submit zu verhindern -->
+    <button
+      id="alertBtn"
+      class="btn-red"
+      type="button"
+      aria-describedby="button-desc"
+      aria-pressed="false"
+      aria-label="Roter Button — zeigt eine Nachricht mit Hallo Welt"
+    >
+      Roter Button
+    </button>
+
+    <!-- Live-Region: zusätzliche, zugängliche Ankündigung für Screenreader.
+         Wird aktualisiert, wenn der Button gedrückt wird. -->
+    <div id="live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Noscript Hinweis -->
+    <noscript>
+      <p role="note">JavaScript ist deaktiviert — das Alert-Fenster kann ohne JavaScript nicht angezeigt werden.</p>
+    </noscript>
+
+  </main>
+
+  <script>
+    (function(){
+      const btn = document.getElementById('alertBtn');
+      const live = document.getElementById('live');
+
+      function showAccessibleAlert(message){
+        // 1) native alert (visuell modal) — nutzt den Browser-Dialog
+        try{
+          window.alert(message);
+        }catch(e){
+          // falls alert nicht verfügbar, weiter mit Live-Region
+        }
+
+        // 2) zusätzliche Ankündigung für Screenreader
+        // Setze Inhalt der Live-Region; aria-atomic="true" sorgt dafür, dass ganze Nachricht vorgelesen wird
+        live.textContent = message;
+
+        // 3) optional: setze aria-pressed für zugängliche Zustandsbeschreibung (kurz) und zurück
+        btn.setAttribute('aria-pressed','true');
+        setTimeout(()=>btn.setAttribute('aria-pressed','false'), 500);
+      }
+
+      // Klick-Handler
+      btn.addEventListener('click', function(){
+        showAccessibleAlert('Hallo Welt!');
+      });
+
+      // Keyboard: Enter / Space sollten den Button aktivieren (native Button tut das bereits),
+      // aber wir behandeln zusätzlich Keydown für bessere Konsistenz und Screenreader.
+      btn.addEventListener('keydown', function(e){
+        // 13 = Enter, 32 = Space
+        if(e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar'){
+          // Verhindere doppeltes Auslösen bei Space (keypress + click in manchen Browsern)
+          e.preventDefault();
+          showAccessibleAlert('Hallo Welt!');
+        }
+      });
+
+      // Optional: für Nutzer mit Assistenztechnologien, die Fokus benötigen
+      btn.addEventListener('keyup', function(e){
+        // keine Aktion nötig, Platzhalter für mögliche Erweiterungen
+      });
+
+      // Sanity: falls JS fehlschlägt, bleibt Seite nutzbar (Noscript oben informiert)
+    })();
+  </script>
+</body>
+</html>
